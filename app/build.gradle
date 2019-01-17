@@ -1,0 +1,111 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.mob.sdk'
+MobSDK {
+    appKey "29b8c010073f9"
+    appSecret "a8a3e4aec19c02ca6a14a565ff2e00c3"
+
+
+    ShareSDK {
+        //平台配置信息
+        devInfo {
+
+            GooglePlus {
+                appId "88635316561-0onsr2gd4hr4m0o9q4hnffnitf5odmst.apps.googleusercontent.com"
+//                appSecret "0JbTve3gnncOnEDPjzR9_cj7"
+                callbackUri "http://localhost"   //google的授权回调地址不能加/结尾
+            }
+
+            Instagram {
+                appId "3a8e90f43f9c4e239ac500509bd89dc5"
+                appSecret "dc96eea430fd494680efaf89538674cc"
+                callbackUri "https://mob.com/"
+            }
+//            LinkedIn {
+//                appKey "ejo5ibkye3vo"
+//                appSecret "cC7B2jpxITqPLZ5M"
+//                callbackUri "http://www.sharesdk.cn"
+//                shareByAppClient true
+//            }
+            WhatsApp {
+                enable true
+            }
+            Facebook {
+                appKey "2314567958588036"
+                appSecret "4d5cdef089add18b952cb7d924ce5eda"
+                callbackUri "https://mob.com/"
+            }
+
+            Twitter {
+                appKey "1412473428822331"
+                appSecret "a42f4f3f867dc947b9ed6020c2e93558"
+                callbackUri "https://mob.com"
+            }
+        }
+    }
+
+}
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.social.preserve"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    //签名
+    signingConfigs {
+        release {
+            storeFile file('hotok.jks')
+            storePassword "socialhotok"
+            keyAlias "1.0"
+            keyPassword "socialhotok"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    implementation 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    //必须使用
+    implementation 'org.xutils:xutils:3.5.0'
+    implementation 'com.alibaba:fastjson:1.2.11'
+    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-18'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-18'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation files('libs/universal-image-loader-1.9.5.jar')
+    //最新版本
+    implementation 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
+    implementation project(':LayoutManagerGroup')
+    implementation project(':dkplayer-java')
+    implementation project(':dkplayer-ui')
+    implementation project(':dkplayer-armv7a')
+    implementation project(':dkplayer-arm64')
+    implementation project(':dkplayer-armv5')
+    implementation project(':dkplayer-x86')
+    implementation project(':dkplayer-x86_64')
+
+
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc12'
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.8.3'
+    implementation 'com.github.ctiao:ndkbitmap-armv7a:0.8.3'
+    implementation "com.android.support:design:27.1.1"
+    implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.2'
+    implementation 'com.google.android.exoplayer:extension-rtmp:2.8.2'
+    implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1325_43613_sharewithdownload_withoutGame_obfs_20180807_151115.jar')
+}

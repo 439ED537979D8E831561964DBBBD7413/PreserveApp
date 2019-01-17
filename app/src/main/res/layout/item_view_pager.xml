@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
+    android:background="@color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.dueeeke.dkplayer.widget.videoview.ListIjkVideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent" />
+
+
+        <ImageView
+            android:id="@+id/ivCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+
+        <com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            app:mlpb_arrow_height="5dp"
+            app:mlpb_arrow_width="10dp"
+            app:mlpb_enable_circle_background="false"
+            app:mlpb_progress_color="@color/main"
+            app:mlpb_progress_stoke_width="4dp"
+            android:visibility="gone"
+            app:mlpb_show_arrow="false" />
+
+        <ImageView
+            android:id="@+id/ivPlay"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@mipmap/icon_play" />
+        <LinearLayout
+            android:id="@+id/ll_locked_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_lock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="12dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+
+        <com.social.preserve.ui.views.ZJRoundImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/default_avatar"
+            app:border_color="@color/white"
+            app:border_width="2dp"
+            app:type="circle"
+            android:visibility="gone"/>
+
+
+        <ImageView
+            android:id="@+id/ivFoolow"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="25dp"
+            android:src="@mipmap/icon_unfav" />
+
+        <TextView
+            android:id="@+id/tvFollowCount"
+            style="@style/white_12_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:shadowColor="@color/black90"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"
+            android:text="@string/Favourite"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/ivZan"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="25dp"
+            android:src="@mipmap/icon_download"/>
+
+        <TextView
+            android:id="@+id/tvZanCount"
+            style="@style/white_12_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:shadowColor="@color/black90"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"
+            android:text="@string/download"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/ivShare"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="25dp"
+            android:src="@mipmap/share" />
+
+        <TextView
+            android:id="@+id/tvShare"
+            style="@style/white_12_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:shadowColor="@color/black90"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="1"
+            android:text="@string/share"
+            android:visibility="visible"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:background="@mipmap/bg_rectangle"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/white_16_bold_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/tvContent"
+                android:shadowColor="@color/black90"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="1"
+                tools:text="asdfasfdasfa" />
+
+            <ImageView
+                android:id="@+id/iv_nation_flag"
+                android:layout_width="18dp"
+                android:layout_height="12dp"
+                android:layout_marginLeft="5dp"
+                android:scaleType="fitXY"
+                tools:src="@mipmap/ic_guoqi"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                tools:text="HongKong"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvContent"
+            style="@style/white_13_sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="7dp"
+            android:lineSpacingExtra="1.5dp"
+            tools:text="fdasfasfasfdasfasfasfasfsfsf"
+            android:shadowColor="@color/black90"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:lines="2"
+            android:ellipsize="end"
+            android:shadowRadius="1" />
+        <TextView
+            android:id="@+id/tvTags"
+            style="@style/white_13_sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginTop="7dp"
+            tools:text="fdasfasfasfdasfasfasfasfsfsf"
+            android:shadowColor="@color/black90"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_marginBottom="15dp"
+            android:shadowRadius="1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="1.2dp"
+                android:layout_above="@+id/ll_bottom"
+                android:background="@drawable/progressbar_color"
+                android:progress="0" />
+
+            <LinearLayout
+                android:id="@+id/ll_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/rlVideo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/ivVideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="85dp"
+                        android:src="@mipmap/video_chat" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlVoice"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/ivVoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/voice_chat" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlGift"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/ivGift"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/send_gift" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pop_layout"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@mipmap/app_up"
+
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+
+            android:gravity="center|top"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvTitle"
+                android:padding="5dp"
+                android:visibility="gone"
+                style="@style/black_14_sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/appUpdate"
+                android:layout_margin="5dp"/>
+            <TextView
+                android:id="@+id/tvMsg"
+                android:padding="5dp"
+                android:lineSpacingExtra="3dp"
+                style="@style/gray_15_sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="@string/appUpdate"
+                android:maxLines="15"
+                android:layout_margin="5dp"/>
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llUp"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvOk"
+                style="@style/white_14_style"
+                android:layout_width="110dp"
+                android:layout_height="35dp"
+                android:background="@drawable/radius_5_main"
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="@string/appUpdate" />
+
+
+
+            <TextView
+                android:id="@+id/tvCancel"
+                style="@style/white_14_style"
+                android:layout_width="110dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/radius_5_gray"
+                android:gravity="center"
+                android:text="@string/cancel" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/llForceUp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvForceUp"
+                style="@style/white_14_style"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_height="35dp"
+                android:background="@drawable/radius_2_main"
+                android:gravity="center"
+                android:text="@string/appUpdate" />
+
+
+        </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/up_dlg_progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/bg_seekbar"
+            />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
