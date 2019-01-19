@@ -21,30 +21,45 @@
             android:id="@+id/ivCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
 
-        <com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar
+        <!--<com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar-->
+            <!--android:id="@+id/pbLoading"-->
+            <!--android:layout_width="@dimen/dkplayer_play_btn_size"-->
+            <!--android:layout_height="@dimen/dkplayer_play_btn_size"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--app:mlpb_arrow_height="5dp"-->
+            <!--app:mlpb_arrow_width="10dp"-->
+            <!--app:mlpb_enable_circle_background="false"-->
+            <!--app:mlpb_progress_color="@color/main"-->
+            <!--app:mlpb_progress_stoke_width="4dp"-->
+            <!--android:visibility="gone"-->
+            <!--app:mlpb_show_arrow="false" />-->
+
+
+
+        <ProgressBar
             android:id="@+id/pbLoading"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="@dimen/dkplayer_play_btn_size"
+            android:layout_height="@dimen/dkplayer_play_btn_size"
             android:layout_centerInParent="true"
-            app:mlpb_arrow_height="5dp"
-            app:mlpb_arrow_width="10dp"
-            app:mlpb_enable_circle_background="false"
-            app:mlpb_progress_color="@color/main"
-            app:mlpb_progress_stoke_width="4dp"
+            android:indeterminateDrawable="@drawable/dkplayer_progress_loading"
             android:visibility="gone"
-            app:mlpb_show_arrow="false" />
+             />
 
         <ImageView
             android:id="@+id/ivPlay"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerInParent="true"
             android:clickable="true"
             android:focusable="true"
-            android:src="@mipmap/icon_play" />
+            android:src="@drawable/dkplayer_selector_play_button"
+            android:padding="@dimen/dkplayer_default_spacing"
+            android:background="@drawable/dkplayer_shape_play_bg"
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/ll_locked_state"
             android:layout_width="wrap_content"
@@ -73,6 +88,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/video_info"
+        android:layout_marginBottom="12dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="12dp"
@@ -92,7 +109,12 @@
             app:type="circle"
             android:visibility="gone"/>
 
-
+    <LinearLayout
+        android:id="@+id/ll_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
         <ImageView
             android:id="@+id/ivFoolow"
             android:layout_width="26dp"
@@ -102,7 +124,7 @@
 
         <TextView
             android:id="@+id/tvFollowCount"
-            style="@style/white_12_style"
+            style="@style/white_10_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -112,7 +134,13 @@
             android:shadowRadius="1"
             android:text="@string/Favourite"
             android:visibility="visible"/>
-
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
         <ImageView
             android:id="@+id/ivZan"
             android:layout_width="26dp"
@@ -132,7 +160,13 @@
             android:shadowRadius="1"
             android:text="@string/download"
             android:visibility="visible"/>
-
+        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
         <ImageView
             android:id="@+id/ivShare"
             android:layout_width="26dp"
@@ -153,8 +187,10 @@
             android:text="@string/share"
             android:visibility="visible"/>
     </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/video_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -245,7 +281,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1.2dp"
                 android:layout_above="@+id/ll_bottom"
-                android:background="@drawable/progressbar_color"
+                android:progressDrawable="@drawable/progressbar_color"
                 android:progress="0" />
 
             <LinearLayout

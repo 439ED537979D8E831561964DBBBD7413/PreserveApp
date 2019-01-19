@@ -88,7 +88,7 @@ public class OtherVideoAdapter extends RecyclerView.Adapter<OtherVideoAdapter.Vi
         final PreserveVideo video = mVideos.get(position);
         if (null == holder.ivVideo.getTag(R.id.iv_video) || !video.getCover().equals(holder.ivVideo.getTag(R.id.iv_video))) {
             holder.ivVideo.setTag(R.id.iv_video, video.getCover());
-            ImageTools2.show800(holder.ivVideo, video.getCover());
+            ImageTools2.show400(holder.ivVideo, video.getCover());
         }
         holder.tvTitle.setText(video.getTitle());
         holder.tagsTv.setText(video.getLabel());

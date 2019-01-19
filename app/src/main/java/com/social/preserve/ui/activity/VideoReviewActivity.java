@@ -35,8 +35,10 @@ import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
+import com.social.preserve.model.ThirdLoginUserData;
 import com.social.preserve.utils.ImageTools2;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.TranslucentNavigationUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +57,7 @@ import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_MATCH_PAR
  * Created by pt198 on 20/09/2018.
  */
 
-public class VideoReviewActivity extends BaseActivity {
+public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 
     private List<PreserveVideo> videoList = new ArrayList<>();
 
@@ -76,11 +78,12 @@ public class VideoReviewActivity extends BaseActivity {
     private ProgressBar currentPro;
     private ImageView currentIvPhoto;
     private ImageView currentIvFollow;
+    private StandardVideoController mCurrentController;
     private TextView currentTvFollowCount;
     private ImageView currentIvZan;
     private ImageView currentIvShare;
     private TextView currentTvZanCount;
-    private CircleProgressBar currentPbLoading;
+    private ProgressBar currentPbLoading;
     private ImageView currentIvCover;
     private PreserveVideo currentVideo;
     private int followStatus = 0;
@@ -89,6 +92,9 @@ public class VideoReviewActivity extends BaseActivity {
     private ImageView currentIvVoice;
     private ImageView currentIvGift;
     private View mCurrentLockLayout;
+    private View mCurrentAddFavLayout;
+    private View mCurrentDownloadLayout;
+    private View mCurrentShareLayout;
     boolean isFollowing = false;
     boolean isZaning = false;
     SharedPreferences mSp;
@@ -99,6 +105,10 @@ public class VideoReviewActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+        fullScreen();
+        if (TranslucentNavigationUtils.checkDeviceHasNavigationBar(this)) {
+            TranslucentNavigationUtils.assistActivity(findViewById(android.R.id.content));
+        }
         initView();
         initData();
         initListener();
@@ -205,7 +215,7 @@ public class VideoReviewActivity extends BaseActivity {
         final ListIjkVideoView videoView = itemView.findViewById(R.id.videoView);
         final ImageView ivPlay = itemView.findViewById(R.id.ivPlay);
         final ImageView ivCover = itemView.findViewById(R.id.ivCover);
-        final CircleProgressBar pbLoading = itemView.findViewById(R.id.pbLoading);
+        final ProgressBar pbLoading = itemView.findViewById(R.id.pbLoading);
         final ProgressBar progressBar = itemView.findViewById(R.id.progressBar);
         final ImageView ivPhoto = itemView.findViewById(R.id.ivPhoto);
         final ImageView ivFollow = itemView.findViewById(R.id.ivFoolow);
@@ -232,7 +242,10 @@ public class VideoReviewActivity extends BaseActivity {
         currentIvGift = ivGift;
         currentIvShare = ivShare;
         mCurrentLockLayout=itemView.findViewById(R.id.ll_locked_state);
-
+        mCurrentAddFavLayout= itemView.findViewById(R.id.ll_like);
+        mCurrentDownloadLayout= itemView.findViewById(R.id.ll_download);
+        mCurrentShareLayout= itemView.findViewById(R.id.ll_share);
+        mCurrentController=(StandardVideoController) currentVideoView.getTag();
         playVideo();
         initViewAndInfo();
 
@@ -252,7 +265,7 @@ public class VideoReviewActivity extends BaseActivity {
 //            updatePlayCount(currentVideo.getId() + "");
 //        }
 
-        currentIvFollow.setOnClickListener(new View.OnClickListener() {
+        mCurrentAddFavLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                if(!checkVisitorPermission()){
@@ -307,17 +320,17 @@ public class VideoReviewActivity extends BaseActivity {
             }
         });
 
-        currentIvZan.setOnClickListener(new View.OnClickListener() {
+        mCurrentDownloadLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(App.getInstance(), getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
                 DownloadManager.getInstace().submitDownloadVideoTask(currentVideo.getVideoUrl(),System.currentTimeMillis()+".mp4",currentVideo.getCover(),true);
             }
         });
-        currentIvShare.setOnClickListener(new View.OnClickListener() {
+        mCurrentShareLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loading(getString(R.string.loading));
+//                loading(getString(R.string.loading));
                 String url=currentVideo.getVideoUrl();
                 ShareUtils.shareFaceBook(VideoReviewActivity.this, "", "", url, new PlatformActionListener(){
 
@@ -614,7 +627,7 @@ public class VideoReviewActivity extends BaseActivity {
                 }
             }
         });
-        currentIvCover.setOnClickListener(new View.OnClickListener() {
+        mCurrentController.getControlView().setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -762,8 +775,8 @@ public class VideoReviewActivity extends BaseActivity {
             });
 */
 
-            ImageTools2.show800(holder.ivCover, video.getCover());
-            ImageTools2.showAvatar(holder.ivPhoto, video.getCover());
+//            ImageTools2.show800(holder.ivCover, video.getCover());
+//            ImageTools2.showAvatar(holder.ivPhoto, video.getCover());
 
 
 //            holder.tvContent.setText(video.getName());
@@ -801,14 +814,15 @@ public class VideoReviewActivity extends BaseActivity {
 //            zanStatus = video.getZanStatus();
 
 //            holder.tvZanCount.setText(video.getLikeNum() + "");
-            PlayerConfig playerConfig = new PlayerConfig.Builder()
-                    .enableCache()
-                    .setLooping()
-                    .addToPlayerManager()//required
+//            PlayerConfig playerConfig = new PlayerConfig.Builder()
+//                    .enableCache()
+//                    .setLooping()
+//                    .addToPlayerManager()//required
 //                        .savingProgress()
-                    .build();
-            holder.videoView.setPlayerConfig(playerConfig);
-            boolean isLock=false;
+//                    .build();
+
+
+//            boolean isLock=false;
 //            if(!"1".equals(App.getVipStatus())&&(App.getLoginUser()!=null&&"1".equals(App.getLoginUser().getSex()))){
 //                if(App.getVideoplayCount() < App.MAX_REVIEW_VIDEO_NUM){
 //                    isLock=false;
@@ -828,13 +842,18 @@ public class VideoReviewActivity extends BaseActivity {
 //                holder.ivPlay.setVisibility(View.GONE);
 //                holder.pbLoading.setVisibility(View.GONE);
 //            }else{
-            holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.lockedStateLayout.setVisibility(View.GONE);
-                holder.ivPlay.setVisibility(View.VISIBLE);
-//                holder.pbLoading.setVisibility(View.VISIBLE);
+//                holder.ivPlay.setVisibility(View.VISIBLE);
+                holder.pbLoading.setVisibility(View.VISIBLE);
                 List<VideoModel> videoList = new ArrayList<>();
                 videoList.add(new VideoModel(video.getVideoUrl(),"",new StandardVideoController(VideoReviewActivity.this), false));
                 holder.videoView.setVideos(videoList);
+            holder.videoView.setTag(holder.controller);
+            holder.videoView.setPlayerConfig(holder.mPlayerConfig);
+            holder.videoView.setVideoController(holder.controller);
+            holder.controller.getThumb().setVisibility(View.VISIBLE);
+            holder.controller.getStartPlayButton().setVisibility(View.GONE);
+            ImageTools2.show800(holder.controller.getThumb(),video.getCover());
 //            }
 //
 //            if (null != App.getLoginUser() && !App.getLoginUser().getuId().equals(video.getTargetId() + "")) {
@@ -891,14 +910,18 @@ public class VideoReviewActivity extends BaseActivity {
             ImageView ivNationFlag ;
 
             ListIjkVideoView videoView;
-            CircleProgressBar pbLoading;
+            ProgressBar pbLoading;
             ImageView ivPlay;
             ImageView ivShare;
             ProgressBar progressBar;
             LinearLayout llBottom;
             RelativeLayout rlGift;
             LinearLayout lockedStateLayout;
-
+            LinearLayout addFavLayout;
+            LinearLayout downloadLayout;
+            LinearLayout shareLayout;
+            private StandardVideoController controller;
+            private PlayerConfig mPlayerConfig;
             public ViewHolder(View itemView) {
                 super(itemView);
                 tvCountryName = itemView.findViewById(R.id.tv_country) ;
@@ -923,6 +946,17 @@ public class VideoReviewActivity extends BaseActivity {
                 llBottom = itemView.findViewById(R.id.ll_bottom);
                 rlGift = itemView.findViewById(R.id.rlGift);
                 lockedStateLayout= itemView.findViewById(R.id.ll_locked_state);
+                addFavLayout= itemView.findViewById(R.id.ll_like);
+                downloadLayout= itemView.findViewById(R.id.ll_download);
+                shareLayout= itemView.findViewById(R.id.ll_share);
+                controller = new StandardVideoController(VideoReviewActivity.this);
+                controller.setNoNeedControlPannel(true);
+                mPlayerConfig= new PlayerConfig.Builder()
+                        .enableCache()
+                        .setLooping()
+                        .addToPlayerManager()//required
+//                        .savingProgress()
+                        .build();
             }
         }
     }

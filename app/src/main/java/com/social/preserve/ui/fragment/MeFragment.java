@@ -1,6 +1,5 @@
 package com.social.preserve.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -17,12 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.social.preserve.App;
 import com.social.preserve.R;
+import com.social.preserve.account.AccountManager;
 import com.social.preserve.model.ApkUpdateInfo;
 import com.social.preserve.model.LanguageListModel;
 import com.social.preserve.model.ThirdLoginResult;
@@ -30,7 +31,6 @@ import com.social.preserve.model.ThirdLoginUserData;
 import com.social.preserve.network.MyException;
 import com.social.preserve.network.MyRequest;
 import com.social.preserve.network.MyResponseCallback;
-import com.social.preserve.ui.activity.MainActivity;
 import com.social.preserve.ui.activity.MyDownloadActivity;
 import com.social.preserve.ui.activity.WebViewActivity;
 import com.social.preserve.ui.adapter.LanguageListAdapter;
@@ -38,6 +38,7 @@ import com.social.preserve.ui.views.LanguageSeDialog;
 import com.social.preserve.ui.views.UpDialog;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.Config;
+import com.social.preserve.utils.ImageTools2;
 import com.social.preserve.utils.ThirdLoginUtils;
 
 import org.xutils.common.Callback;
@@ -83,6 +84,10 @@ public class MeFragment extends BaseFragment {
     TextView tvLanguage;
     @BindView(R.id.tv_version)
     TextView tvVersion;
+    @BindView(R.id.iv_avatar)
+    ImageView avatarIv;
+    @BindView(R.id.tv_name)
+    TextView tvName;
     private List<LanguageListModel> mLanguages=new ArrayList<>();
     private static final String TAG = "MeFragment";
     @Nullable
@@ -97,8 +102,22 @@ public class MeFragment extends BaseFragment {
     private void initView() {
         initLanguageInfo();
         initVersionCode();
+        initUserInfo();
     }
 
+    private void initUserInfo(){
+        if(AccountManager.getInstace().getNickName()==null){
+            tvFacebookLogin.setText(R.string.face_login);
+            tvName.setText("");
+            tvName.setVisibility(View.GONE);
+            avatarIv.setImageResource(R.mipmap.ic_default_avatar);
+        }else {
+            tvFacebookLogin.setText(R.string.login_out);
+            tvName.setText(AccountManager.getInstace().getNickName());
+            tvName.setVisibility(View.VISIBLE);
+            ImageTools2.showAvatar(avatarIv, AccountManager.getInstace().getAvatar());
+        }
+    }
 
     private void initLanguageInfo(){
         Resources resources = getContext().getResources();
@@ -230,7 +249,7 @@ public class MeFragment extends BaseFragment {
     }
 
     private Thread mThirdLoginTh;
-    private void loginIn(ThirdLoginUserData data){
+    private void loginIn(final ThirdLoginUserData data){
         //invoke server interface
 
         loading(getString(R.string.loading));
@@ -242,9 +261,15 @@ public class MeFragment extends BaseFragment {
         para1.put("version",App.appVersionName);
         MyRequest.sendPostRequest(Api.THIRD_LOGIN, para1, new MyResponseCallback<ThirdLoginResult>() {
             @Override
-            public void onSuccess(ThirdLoginResult data) {
+            public void onSuccess(ThirdLoginResult loginResult) {
                 dissLoad();
-                tvFacebookLogin.setText(R.string.login_already);
+                tvFacebookLogin.setText(R.string.login_out);
+                tvName.setText(data.getNickName());
+                tvName.setVisibility(View.VISIBLE);
+                ImageTools2.showAvatar(avatarIv,data.getPhoto());
+                AccountManager.getInstace().setNickName(data.getNickName());
+                AccountManager.getInstace().setAvatar(data.getPhoto());
+
             }
 
             @Override
@@ -263,20 +288,33 @@ public class MeFragment extends BaseFragment {
             mThirdLoginTh.interrupt();
         }
     }
-    private String mUserName;
-    private String mPwd;
+//    private String mAccount;
+//    private String mPwd;
     @OnClick({R.id.tv_facebook_login, R.id.ll_my_downloads, R.id.ll_history, R.id.ll_language, R.id.ll_check_update, R.id.ll_pic_policy, R.id.ll_terms_use})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_facebook_login:
-                loading(getResources().getString(R.string.loading));
-                mThirdLoginTh = new Thread() {
-                    @Override
-                    public void run() {
-                        thirdAuth(ThirdLoginUtils.LOGIN_TYPE_FACEBOOK);
-                    }
-                };
-                mThirdLoginTh.start();
+                String text=((TextView)view).getText().toString();
+                if(text.equals(getString(R.string.face_login))){
+                    loading(getResources().getString(R.string.loading));
+                    mThirdLoginTh = new Thread() {
+                        @Override
+                        public void run() {
+                            thirdAuth(ThirdLoginUtils.LOGIN_TYPE_FACEBOOK);
+                        }
+                    };
+                    mThirdLoginTh.start();
+                }else{
+                    tvFacebookLogin.setText(R.string.face_login);
+                    tvName.setText("");
+                    tvName.setVisibility(View.GONE);
+                    avatarIv.setImageResource(R.mipmap.ic_default_avatar);
+                    AccountManager.getInstace().setAccount(null);
+                    AccountManager.getInstace().setAvatar(null);
+                    AccountManager.getInstace().setNickName(null);
+                    AccountManager.getInstace().setPwd(null);
+                }
+
                 break;
             case R.id.ll_my_downloads:
                 Intent i=new Intent(getContext(), MyDownloadActivity.class);

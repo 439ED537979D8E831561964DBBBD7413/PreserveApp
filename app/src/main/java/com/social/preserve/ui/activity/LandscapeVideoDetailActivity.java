@@ -295,7 +295,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
                 DownloadManager.getInstace().submitDownloadVideoTask(mVideo.getVideoUrl(), System.currentTimeMillis() + ".mp4", mVideo.getCover(), false);
                 break;
             case R.id.ll_share:
-                loading(getString(R.string.loading));
+//                loading(getString(R.string.loading));
                 String url = mVideo.getVideoUrl();
                 ShareUtils.shareFaceBook(this, "", "", url, new PlatformActionListener() {
 

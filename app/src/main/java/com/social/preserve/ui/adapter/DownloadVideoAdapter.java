@@ -132,7 +132,7 @@ public class DownloadVideoAdapter extends RecyclerView.Adapter<DownloadVideoAdap
         final PreserveVideo video = mVideos.get(position) ;
         if (null==holder.ivVideo.getTag(R.id.iv_video) || !video.getCover().equals(holder.ivVideo.getTag(R.id.iv_video))) {
             holder.ivVideo.setTag(R.id.iv_video,video.getCover());
-            ImageTools2.show800(holder.ivVideo,video.getCover() );
+            ImageTools2.show400(holder.ivVideo,video.getCover() );
         }
         if(video.getTitle()!=null) {
             int length = video.getTitle().length();
@@ -168,9 +168,15 @@ public class DownloadVideoAdapter extends RecyclerView.Adapter<DownloadVideoAdap
                 notifyDataSetChanged();
             }
         });
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.content.getLayoutParams();
-        params.height = (int) (App.screenWidth/2*0.75);
-        holder.content.setLayoutParams(params);
+        if(isShortVideo){
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.content.getLayoutParams();
+            params.height = (int) (App.screenWidth/3*1.5);
+            holder.content.setLayoutParams(params);
+        }else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
+            params.height = (int) (App.screenWidth / 2 * 0.75);
+            holder.content.setLayoutParams(params);
+        }
         holder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

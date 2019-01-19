@@ -43,9 +43,9 @@ public class ImageTools2 {
     }
     // 使用DisplayImageOptions.Builder()创建DisplayImageOptions
     private final static DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.mipmap.default_img) // 设置图片Uri为空或是错误的时候显示的图片
-            .showImageOnLoading(R.mipmap.default_img)
-            .showImageOnFail(R.mipmap.default_img) // 设置图片加载或解码过程中发生错误显示的图片
+//            .showImageForEmptyUri(R.mipmap.default_img) // 设置图片Uri为空或是错误的时候显示的图片
+//            .showImageOnLoading(R.mipmap.default_img)
+//            .showImageOnFail(R.mipmap.default_img) // 设置图片加载或解码过程中发生错误显示的图片
             .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
             .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡
             .displayer(new FadeInBitmapDisplayer(200) )
@@ -67,8 +67,8 @@ public class ImageTools2 {
 
     // 使用DisplayImageOptions.Builder()创建DisplayImageOptions
     private final static DisplayImageOptions options_head = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.mipmap.default_avatar) // 设置图片Uri为空或是错误的时候显示的图片
-            .showImageOnFail(R.mipmap.default_avatar) // 设置图片加载或解码过程中发生错误显示的图片
+            .showImageForEmptyUri(R.mipmap.ic_default_avatar) // 设置图片Uri为空或是错误的时候显示的图片
+            .showImageOnFail(R.mipmap.ic_default_avatar) // 设置图片加载或解码过程中发生错误显示的图片
             .cacheInMemory(true) // 设置下载的图片是否缓存在内存中
             .cacheOnDisk(true) // 设置下载的图片是否缓存在SD卡
             .displayer(new FadeInBitmapDisplayer(200) )
@@ -153,7 +153,7 @@ public class ImageTools2 {
     public static void showAvatar(final ImageView imageView, String uri) {
 
         if (uri == null || uri.length() <= 0){
-            displayLocal(imageView,R.mipmap.default_avatar);
+            displayLocal(imageView,R.mipmap.ic_default_avatar);
             return;
         }
 //        if (uri == null || uri.length() <= 0) return;
@@ -426,6 +426,7 @@ public class ImageTools2 {
 
             @Override
             public void onLoadingFailed(final String imageUri, View view, FailReason failReason) {
+                Log.d(TAG, "onLoadingFailed: ");
                 view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -436,7 +437,7 @@ public class ImageTools2 {
 
             @Override
             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-
+                Log.d(TAG, "onLoadingComplete: ");
             }
 
             @Override

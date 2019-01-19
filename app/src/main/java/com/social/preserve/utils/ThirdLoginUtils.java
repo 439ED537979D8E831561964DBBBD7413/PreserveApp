@@ -40,7 +40,7 @@ public class ThirdLoginUtils {
             //判断是否已经存在授权状态，可以根据自己的登录逻辑设置
 //            Toast.makeText(App.getInstance(), "已经授权过了", Toast.LENGTH_SHORT).show();
             plat.removeAccount(true);//移除授权状态和本地缓存，下次授权会重新授权
-            return;
+//            return;
         }
         if(loginType==LOGIN_TYPE_GOOGLEPLUS) {
             plat.SSOSetting(true);//SSO授权，传false默认是客户端授权，没有客户端授权或者不支持客户端授权会跳web授权

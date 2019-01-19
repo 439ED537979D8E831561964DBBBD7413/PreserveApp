@@ -100,8 +100,8 @@ public class PermissionUtils {
             Manifest.permission.WAKE_LOCK,
             Manifest.permission.DISABLE_KEYGUARD,
 //            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS
     };
 
     public static final String[] requestPermissionStorage = {

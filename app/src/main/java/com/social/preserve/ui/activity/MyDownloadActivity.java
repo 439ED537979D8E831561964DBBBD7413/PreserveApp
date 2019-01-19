@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.social.preserve.R;
 import com.social.preserve.ui.fragment.DownloadedLandtVideoFrag;
 import com.social.preserve.ui.fragment.DownloadedShortVideoFrag;
+import com.social.preserve.ui.views.DownloadVideoMoreOpeWindow;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -69,17 +70,18 @@ public class MyDownloadActivity extends BaseActivity {
             }
         });
         tvCommonRight.setText(getString(R.string.label_edit));
+        showMoreOpeIv();
         tvCommonRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(tvCommonRight.getText().toString().equals(getString(R.string.label_edit))){
-                    if(mCurrentTabIndex==0){
-                        shortVideoFrag.setEdit(true);
-                    } else{
-                        landtVideoFrag.setEdit(true);
-                    }
-                    tvCommonRight.setText(getString(R.string.cancel));
-                    llBottom.setVisibility(View.VISIBLE);
+//                    if(mCurrentTabIndex==0){
+//                        shortVideoFrag.setEdit(true);
+//                    } else{
+//                        landtVideoFrag.setEdit(true);
+//                    }
+//                    tvCommonRight.setText(getString(R.string.cancel));
+//                    llBottom.setVisibility(View.VISIBLE);
                 }else{
                     if(mCurrentTabIndex==0){
                         shortVideoFrag.setEdit(false);
@@ -87,9 +89,28 @@ public class MyDownloadActivity extends BaseActivity {
                         landtVideoFrag.setEdit(false);
                     }
                     tvCommonRight.setText(getString(R.string.label_edit));
+                    showMoreOpeIv();
                     llBottom.setVisibility(View.GONE);
                 }
 
+            }
+        });
+        ivMoreOpe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DownloadVideoMoreOpeWindow.show(MyDownloadActivity.this, ivMoreOpe, new DownloadVideoMoreOpeWindow.OnEditListener() {
+                    @Override
+                    public void onEdit() {
+                        if(mCurrentTabIndex==0){
+                            shortVideoFrag.setEdit(true);
+                        } else{
+                            landtVideoFrag.setEdit(true);
+                        }
+                        tvCommonRight.setText(getString(R.string.cancel));
+                        llBottom.setVisibility(View.VISIBLE);
+                        hideMoreOpeIv();
+                    }
+                });
             }
         });
         mTitles = new String[]{getString(R.string.label_short_video), getString(R.string.label_video)};
@@ -151,7 +172,7 @@ public class MyDownloadActivity extends BaseActivity {
 
                 SimplePagerTitleView simplePagerTitleView = new SimplePagerTitleView(context);
                 simplePagerTitleView.setText(mTitles[index]);
-                simplePagerTitleView.setTextSize(19);
+                simplePagerTitleView.setTextSize(16);
 //                simplePagerTitleView.setPadding(ScreenUtils.dip2px(getContext(),5), 0, ScreenUtils.dip2px(getContext(),5), 0);
                 simplePagerTitleView.setNormalColor(getResources().getColor(R.color.gray));
                 simplePagerTitleView.setSelectedColor(getResources().getColor(R.color.main));

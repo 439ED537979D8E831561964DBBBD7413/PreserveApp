@@ -164,6 +164,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
         TextView tagsTv;
         @BindView(R.id.iv_more)
         ImageView ivMore;
+
         private StandardVideoController controller;
         private PlayerConfig mPlayerConfig;
         public ViewHolder(View view){

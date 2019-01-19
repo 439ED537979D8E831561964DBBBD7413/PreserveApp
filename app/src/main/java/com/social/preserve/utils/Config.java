@@ -7,6 +7,6 @@ import android.os.Environment;
  */
 
 public class Config {
-    public static final String DOWNLOAD_STORAGE_DIR = Environment.getExternalStorageDirectory() + "/preserve_download/";
+    public static final String DOWNLOAD_STORAGE_DIR = Environment.getExternalStorageDirectory() + "/preserve/download/";
     public static final String APKPATH = DOWNLOAD_STORAGE_DIR+"update-release.apk";
 }

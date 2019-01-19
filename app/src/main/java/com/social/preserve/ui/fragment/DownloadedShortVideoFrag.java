@@ -135,12 +135,17 @@ public class DownloadedShortVideoFrag extends BaseFragment {
                                    RecyclerView parent, RecyclerView.State state) {
 
 
-            if (parent.getChildPosition(view) %2==1) {
+            if (parent.getChildPosition(view) %3==2) {
                 outRect.top = 0;
                 outRect.left = 0;
                 outRect.right = 0;
                 outRect.bottom = space;
-            }else if (parent.getChildPosition(view) %2==0){
+            }else if (parent.getChildPosition(view) %3==1){
+                outRect.top = 0;
+                outRect.left = 0;
+                outRect.right = space;
+                outRect.bottom = space;
+            }else{
                 outRect.top = 0;
                 outRect.left = 0;
                 outRect.right = space;
@@ -154,10 +159,10 @@ public class DownloadedShortVideoFrag extends BaseFragment {
 
         videoAdpater = new DownloadVideoAdapter(getActivity(),true);
 
-        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(),2);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(),3);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(ScreenUtils.dip2px(getContext(),15)));
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(ScreenUtils.dip2px(getContext(),2)));
         mRecyclerView.setAdapter(videoAdpater);
 
     }

@@ -25,6 +25,7 @@ import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.DownloadService;
+import com.social.preserve.download.DownloadTask;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.ApkUpdateInfo;
 import com.social.preserve.model.TabEntity;
@@ -83,6 +84,7 @@ public class MainActivity extends BaseActivity {
     private ShortVideoFrag mShortVideoFrag;
     private LandscapeVideoFragment mLandVideoFrag;
     private UpDialog updialog;
+    private static final String TAG = "MainActivity";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,6 +235,7 @@ public class MainActivity extends BaseActivity {
 
     protected void setDownLoad(String downloadurl) {
         // TODO Auto-generated method stub
+
         RequestParams params = new RequestParams(downloadurl);
         params.setAutoRename(true);//断点下载
         params.setSaveFilePath(Config.APKPATH);
@@ -257,9 +260,9 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onSuccess(File file) {
-
+                Log.d(TAG, "onSuccess: ");
                 if (Build.VERSION.SDK_INT >= 24) {//判读版本是否在7.0以上
-                    Uri apkUri = FileProvider.getUriForFile(MainActivity.this, "com.social.ht", file);
+                    Uri apkUri = FileProvider.getUriForFile(MainActivity.this, "com.social.preserve", file);
                     Intent install = new Intent(Intent.ACTION_VIEW);
                     install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);//添加这一句表示对目标应用临时授权该Uri所代表的文件
@@ -268,7 +271,7 @@ public class MainActivity extends BaseActivity {
                 } else {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setDataAndType(Uri.fromFile(new File(Config.DOWNLOAD_STORAGE_DIR, "update-release.apk")), "application/vnd.android.package-archive");
+                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
                     startActivity(intent);
 
                 }
@@ -277,6 +280,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onLoading(long arg0, long arg1, boolean arg2) {
+                Log.d(TAG, "onLoading: "+arg1);
                 updialog.setMax((int) arg0);
                 updialog.setProgress((int) arg1);
             }
@@ -335,7 +339,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateDownloadView();
         DownloadManager.getInstace().registerDownloadListener(mDownloadListener);
+
     }
 
     @Override
@@ -343,6 +349,22 @@ public class MainActivity extends BaseActivity {
         super.onPause();
         DownloadManager.getInstace().unregisterDownloadListener(mDownloadListener);
     }
+
+    private void updateDownloadView(){
+        Log.d(TAG, "updateUploadView: getUploadingTasks "+DownloadManager.getInstace().getDownloadingTasks().size());
+        if(DownloadManager.getInstace().getDownloadingTasks().size()>0) {
+            downloadProgressLayout.setVisibility(View.VISIBLE);
+            DownloadTask task = DownloadManager.getInstace().getDownloadingTasks().get(0);
+            if(task==null){
+                return;
+            }
+            downloadProgressTv.setText(task.getFileName()+"  "+getString(R.string.label_downloading)+task.getProgress()+"%");
+
+        }else{
+            downloadProgressLayout.setVisibility(View.GONE);
+        }
+    }
+
 
     private DownloadManager.OnDownloadListener mDownloadListener =  new DownloadManager.OnDownloadListener() {
         @Override

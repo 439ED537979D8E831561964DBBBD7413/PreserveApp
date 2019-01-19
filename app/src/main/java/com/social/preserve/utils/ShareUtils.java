@@ -2,6 +2,7 @@ package com.social.preserve.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import cn.sharesdk.facebook.Facebook;
@@ -127,14 +128,19 @@ public class ShareUtils {
     }
 
     public static void shareFaceBook(Activity act, String title, String content, String url, PlatformActionListener listener) {
-        Platform.ShareParams sp = null;
-        Platform platform = null;
-        sp = new Facebook.ShareParams();
-        platform = ShareSDK.getPlatform(Facebook.NAME);
-        sp.setUrl(url);
-
-        platform.setPlatformActionListener(listener); // 设置分享事件回调
-        // 执行分享
-        platform.share(sp);
+//        Platform.ShareParams sp = null;
+//        Platform platform = null;
+//        sp = new Facebook.ShareParams();
+//        platform = ShareSDK.getPlatform(Facebook.NAME);
+//        sp.setUrl(url);
+//
+//        platform.setPlatformActionListener(listener); // 设置分享事件回调
+//        platform.SSOSetting(false);
+//        // 执行分享
+//        platform.share(sp);
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+        sendIntent.putExtra(Intent.EXTRA_TEXT,url );
+        act.startActivity(Intent.createChooser(sendIntent, "分享"));
     }
 }

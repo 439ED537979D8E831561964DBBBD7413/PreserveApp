@@ -23,7 +23,7 @@
         android:id="@+id/tab_layout_main"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#ffffff"
+        android:background="@color/white"
         android:layout_alignParentBottom="true"
         tl:tl_indicator_color="#00000000"
         tl:tl_textSelectColor="#2C97DE"
@@ -39,6 +39,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_above="@+id/tab_layout_main"
+        android:layout_marginBottom="7dp"
         android:visibility="gone">
 
         <TextView
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:text="70%"
+            android:text=""
             android:textSize="16sp"
             />
     </LinearLayout>

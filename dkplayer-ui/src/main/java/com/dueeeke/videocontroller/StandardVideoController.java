@@ -107,6 +107,13 @@ public class StandardVideoController extends GestureVideoController implements V
         mRefreshButton = mControllerView.findViewById(R.id.iv_refresh);
         mRefreshButton.setOnClickListener(this);
     }
+    public View getControlView(){
+        return mControllerView;
+    }
+
+    public ImageView getStartPlayButton() {
+        return mStartPlayButton;
+    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -344,8 +351,14 @@ public class StandardVideoController extends GestureVideoController implements V
         mBottomContainer.setVisibility(View.GONE);
         mBottomContainer.startAnimation(mHideAnim);
     }
-
+    private boolean mNoNeddControlPannel;
+    public void setNoNeedControlPannel(boolean noNeddControlPannel){
+        this.mNoNeddControlPannel=noNeddControlPannel;
+    }
     private void show(int timeout) {
+        if(mNoNeddControlPannel){
+            return;
+        }
         if (mSysTime != null)
             mSysTime.setText(getCurrentSystemTime());
         if (!mShowing) {
@@ -368,6 +381,7 @@ public class StandardVideoController extends GestureVideoController implements V
         if (timeout != 0) {
             postDelayed(mFadeOut, timeout);
         }
+
     }
 
     private void showAllViews() {

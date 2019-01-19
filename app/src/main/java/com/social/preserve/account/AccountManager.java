@@ -3,7 +3,6 @@ package com.social.preserve.account;
 import android.text.TextUtils;
 
 import com.social.preserve.App;
-import com.social.preserve.download.DownloadManager;
 import com.social.preserve.utils.PreferencesHelper;
 
 /**
@@ -12,11 +11,14 @@ import com.social.preserve.utils.PreferencesHelper;
 
 public class AccountManager {
     private PreferencesHelper mAccountHelper;
-    private String mUserName;
+    private String mAccount;
     private String mPwd;
-    private static final String KEY_USER_NAME = "user_name";
+    private String mNickName;
+    private String mAvatar;
+    private static final String KEY_ACCOUNT = "user_name";
     private static final String KEY_PWD = "pwd";
-
+    private static final String KEY_NICK_NAME = "nick_name";
+    private static final String KEY_AVATAR = "avatar";
     private AccountManager() {
 
     }
@@ -31,16 +33,16 @@ public class AccountManager {
 
     public void init() {
         mAccountHelper = new PreferencesHelper(App.getInstance(), "account_helper");
-        String username = mAccountHelper.getValue(KEY_USER_NAME);
+        String username = mAccountHelper.getValue(KEY_ACCOUNT);
         String pwd = mAccountHelper.getValue(KEY_PWD);
 
     }
 
-    public String getUserName() {
-        if (TextUtils.isEmpty(mUserName)) {
-            return mAccountHelper.getValue(KEY_USER_NAME);
+    public String getAccount() {
+        if (TextUtils.isEmpty(mAccount)) {
+            return mAccountHelper.getValue(KEY_ACCOUNT);
         }
-        return mUserName;
+        return mAccount;
     }
 
     public String getPwd() {
@@ -50,13 +52,32 @@ public class AccountManager {
         return mPwd;
     }
 
-    public void setUserName(String userName) {
-        this.mUserName = userName;
-        this.mAccountHelper.setValue(KEY_USER_NAME, userName);
+    public void setAccount(String account) {
+        this.mAccount = account;
+        this.mAccountHelper.setValue(KEY_ACCOUNT, account);
     }
-
     public void setPwd(String pwd) {
         this.mPwd = pwd;
         this.mAccountHelper.setValue(KEY_PWD, pwd);
+    }
+    public void setAvatar(String avatar) {
+        this.mAvatar = avatar;
+        this.mAccountHelper.setValue(KEY_AVATAR, avatar);
+    }
+    public void setNickName(String nickName) {
+        this.mNickName = nickName;
+        this.mAccountHelper.setValue(KEY_NICK_NAME, nickName);
+    }
+    public String getAvatar() {
+        if (TextUtils.isEmpty(mAvatar)) {
+            return mAccountHelper.getValue(KEY_AVATAR);
+        }
+        return mAvatar;
+    }
+    public String getNickName() {
+        if (TextUtils.isEmpty(mNickName)) {
+            return mAccountHelper.getValue(KEY_NICK_NAME);
+        }
+        return mNickName;
     }
 }

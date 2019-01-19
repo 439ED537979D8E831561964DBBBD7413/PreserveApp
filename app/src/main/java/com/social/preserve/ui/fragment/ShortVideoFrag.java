@@ -25,10 +25,12 @@ import com.social.preserve.utils.ScreenUtils;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.UIUtil;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView;
 
 import java.util.ArrayList;
@@ -141,7 +143,7 @@ public class ShortVideoFrag extends BaseFragment {
                     SimplePagerTitleView simplePagerTitleView = new SimplePagerTitleView(context);
                     simplePagerTitleView.setText(mTitles[index]);
                     simplePagerTitleView.setTextSize(16);
-                    simplePagerTitleView.setPadding(ScreenUtils.dip2px(getContext(),5), 0, ScreenUtils.dip2px(getContext(),5), 0);
+                    simplePagerTitleView.setPadding(ScreenUtils.dip2px(getContext(),10), 0, ScreenUtils.dip2px(getContext(),10), 0);
                     simplePagerTitleView.setNormalColor(getActivity().getResources().getColor(R.color.gray));
                     simplePagerTitleView.setSelectedColor(getActivity().getResources().getColor(R.color.main));
                     simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
@@ -157,15 +159,14 @@ public class ShortVideoFrag extends BaseFragment {
 
             @Override
             public IPagerIndicator getIndicator(Context context) {
-//                LinePagerIndicator indicator = new LinePagerIndicator(context);
-//                indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
-//                indicator.setYOffset(UIUtil.dip2px(context, 4));
-//                indicator.setLineWidth(WidgetUtil.dip2px(getActivity(),12));
-//                indicator.setLineHeight(WidgetUtil.dip2px(getActivity(),4));
-//                indicator.setRoundRadius(WidgetUtil.dip2px(getActivity(),3));
-//                indicator.setColors(getActivity().getResources().getColor(R.color.main));
-//                return indicator;
-                return null;
+                LinePagerIndicator indicator = new LinePagerIndicator(context);
+                indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
+                indicator.setYOffset(UIUtil.dip2px(context, 4));
+                indicator.setLineWidth(UIUtil.dip2px(getActivity(),28));
+                indicator.setLineHeight(UIUtil.dip2px(getActivity(),2));
+                indicator.setRoundRadius(UIUtil.dip2px(getActivity(),3));
+                indicator.setColors(getActivity().getResources().getColor(R.color.main));
+                return indicator;
             }
         });
         mMagicIndicator.setNavigator(mCommonNavigator);

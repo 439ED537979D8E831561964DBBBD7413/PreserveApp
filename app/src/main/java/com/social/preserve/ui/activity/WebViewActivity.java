@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.social.preserve.R;
 import com.social.preserve.ui.views.X5WebView;
 import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
 
 public class WebViewActivity extends BaseActivity {
     X5WebView webView;
@@ -25,6 +26,12 @@ public class WebViewActivity extends BaseActivity {
             //if("http://hotokyjy.8b652a741ff14ec381374edb1604b123.xyz/".equals(url)){
 
             return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView webView, String s) {
+            dissLoad();
+            super.onPageFinished(webView, s);
         }
     };
 
@@ -61,6 +68,7 @@ public class WebViewActivity extends BaseActivity {
         webView = findViewById(R.id.official_webview);
         initWebViewSettings();
         webView.loadUrl(getIntent().getStringExtra("web_url"));
+        loading(getString(R.string.loading));
     }
 
     private void initWebViewSettings(){

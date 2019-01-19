@@ -15,14 +15,13 @@ import com.gyf.barlibrary.ImmersionBar;
 import com.social.preserve.R;
 import com.social.preserve.ui.views.CenterLoadingView;
 
-
 import butterknife.OnClick;
 
 /**
  * Created by pt198 on 08/01/2019.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class UnfitSysWindowBaseActivity extends AppCompatActivity {
     ImageView tvCommonBack;
     TextView tvCommonTitle;
     TextView tvCommonRight;
@@ -34,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(R.layout.activity_base_unfit_sys_window);
         initView();
     }
 
@@ -109,7 +108,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public CenterLoadingView loading(String title) {
         if(null==loading){
-            loading = new CenterLoadingView(BaseActivity.this);
+            loading = new CenterLoadingView(UnfitSysWindowBaseActivity.this);
             loading.setCanceledOnTouchOutside(false);
         }
         if (!this.isFinishing()){

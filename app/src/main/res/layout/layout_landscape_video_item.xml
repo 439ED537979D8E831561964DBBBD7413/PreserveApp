@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/rl_content"
@@ -15,15 +16,24 @@
         <com.dueeeke.videoplayer.player.IjkVideoView
         android:id="@+id/video_player"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="211dp" />
         <ImageView
             android:id="@+id/iv_video"
             android:layout_width="match_parent"
-            android:layout_height="270dp"
+            android:layout_height="211dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
-            android:src="@mipmap/default_img"
+            android:src="@drawable/bg_gray"
+
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/ic_logo"
+            android:layout_marginTop="75dp"
             android:visibility="gone"/>
         <ImageView
             android:layout_width="wrap_content"
@@ -134,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="asd"
+            android:text=""
             android:textSize="16sp"
             android:textColor="@color/text_color_333333"
             />
@@ -161,7 +171,7 @@
             android:maxLines="2"
             android:textColor="@color/text_color_333333"
             android:textSize="15sp"
-            tools:text="fdasfasfasfdasfasfasfasfsfsf" />
+            tools:text="" />
         <TextView
             android:id="@+id/tvTags"
             style="@style/white_13_sp"
@@ -171,12 +181,18 @@
             android:layout_marginRight="60dp"
             android:layout_marginTop="5dp"
             android:layout_below="@+id/tvContent"
-            tools:text="fdasfasfasfdasfasfasfasfsfsf"
+            tools:text=""
             android:lines="1"
             android:ellipsize="end"
             android:paddingBottom="10dp"
             android:textSize="13sp"
             android:textColor="@color/color_666666"
              />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@+id/tvTags"
+            android:background="@color/sysBackColor"
+            />
     </RelativeLayout>
 </RelativeLayout>

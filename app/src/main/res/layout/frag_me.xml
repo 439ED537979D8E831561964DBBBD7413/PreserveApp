@@ -2,82 +2,121 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp">
+    android:background="@color/white"
+    >
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="40dp"
-        android:gravity="center_vertical">
-        <ImageView android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@mipmap/icon_facebook"/>
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@mipmap/ic_default_avatar"/>
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="center_vertical"
+                android:textSize="17sp"
+                android:textColor="@color/text_color_333333"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone"
+                />
         <TextView
             android:id="@+id/tv_facebook_login"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:text="@string/face_login"
-            android:layout_marginLeft="20dp"
             android:gravity="center_vertical"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:background="@drawable/bg_stroke_gray"/>
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="11sp"
+            android:textColor="@color/main"
+            android:background="@drawable/bg_stroke_pink"/>
+        </LinearLayout>
     </LinearLayout>
+    <View android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/sysBackColor"/>
     <LinearLayout
         android:id="@+id/ll_my_downloads"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_download"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/divider_line"
         />
     <LinearLayout
         android:id="@+id/ll_history"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_history"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/divider_line"
         android:visibility="gone"
         />
     <LinearLayout
         android:id="@+id/ll_language"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_language"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <TextView
             android:id="@+id/tv_language"
             android:layout_width="wrap_content"
@@ -85,27 +124,33 @@
             android:layout_gravity="center_vertical"
             android:text="English"
             android:gravity="center_vertical"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="5dp"
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/divider_line"
         />
     <LinearLayout
         android:id="@+id/ll_check_update"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_check_update"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <TextView
             android:id="@+id/tv_version"
             android:layout_width="wrap_content"
@@ -113,50 +158,64 @@
             android:layout_gravity="center_vertical"
             android:text="V1.0.0"
             android:gravity="center_vertical"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="5dp"
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/divider_line"
         />
     <LinearLayout
         android:id="@+id/ll_pic_policy"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_pic_policy"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/divider_line"
         />
     <LinearLayout
         android:id="@+id/ll_terms_use"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
         <TextView android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:text="@string/label_terms_use"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/text_color_333333"/>
         <ImageView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/icon_to"/>
     </LinearLayout>
-
+    <View android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/sysBackColor"
+        />
 </LinearLayout>

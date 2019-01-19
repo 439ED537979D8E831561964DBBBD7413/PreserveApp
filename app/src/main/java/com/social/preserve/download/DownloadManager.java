@@ -43,6 +43,13 @@ public class DownloadManager {
 
     }
     public void init(){
+        File downDir=new File(Config.DOWNLOAD_STORAGE_DIR);
+        if(!downDir.getParentFile().exists()){
+            downDir.getParentFile().mkdirs();
+        }
+        if(!downDir.exists()){
+            downDir.mkdirs();
+        }
         mLoop=true;
         startLoop();
     }

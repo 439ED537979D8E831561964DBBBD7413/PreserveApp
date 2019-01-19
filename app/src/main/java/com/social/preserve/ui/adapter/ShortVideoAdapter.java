@@ -87,7 +87,7 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
         final PreserveVideo video = mVideos.get(position) ;
         if (null==holder.ivVideo.getTag(R.id.iv_video) || !video.getCover().equals(holder.ivVideo.getTag(R.id.iv_video))) {
             holder.ivVideo.setTag(R.id.iv_video,video.getCover());
-            ImageTools2.show800(holder.ivVideo,video.getCover() );
+            ImageTools2.show400(holder.ivVideo,video.getCover() );
         }
         if(video.getTitle()!=null) {
             int length = video.getTitle().length();
@@ -140,7 +140,8 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
 
         @BindView(R.id.ll_nation)
         LinearLayout mLLNation;
-
+        @BindView(R.id.iv_logo)
+        ImageView ivLogo;
         public ViewHolder(View view){
             super(view);
             ButterKnife.bind(this,view);

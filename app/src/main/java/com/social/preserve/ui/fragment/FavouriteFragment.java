@@ -103,9 +103,9 @@ public class FavouriteFragment extends BaseFragment {
 
                 SimplePagerTitleView simplePagerTitleView = new SimplePagerTitleView(context);
                 simplePagerTitleView.setText(mTitles[index]);
-                simplePagerTitleView.setTextSize(19);
+                simplePagerTitleView.setTextSize(16);
 //                simplePagerTitleView.setPadding(ScreenUtils.dip2px(getContext(),5), 0, ScreenUtils.dip2px(getContext(),5), 0);
-                simplePagerTitleView.setNormalColor(getActivity().getResources().getColor(R.color.gray));
+                simplePagerTitleView.setNormalColor(getActivity().getResources().getColor(R.color.dark));
                 simplePagerTitleView.setSelectedColor(getActivity().getResources().getColor(R.color.main));
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
