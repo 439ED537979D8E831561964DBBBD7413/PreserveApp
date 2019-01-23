@@ -15,5 +15,5 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    compileOnly project(':dkplayer-java')
+    implementation project(':dkplayer-java')
 }

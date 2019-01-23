@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PreserveApp</string>
+    <string name="app_name">TinyVideo</string>
     <string name="net_error">Network is not available</string>
     <string name="error">Network connection timeout \nPlease check your network status</string>
     <string name="no_record">No record</string>
@@ -62,6 +62,7 @@
     <string name="google_channel">google2018ruixun</string>
     <string name="google">google</string>
     <string name="preserve">preserve</string>
+    <string name="umeng_channel">preserve_app</string>
     <string name="google_market">com.android.vending</string>
     <string name="get_update_info_fail">Get apk update info fail</string>
     <string name="no_new_version">No new version</string>
@@ -84,4 +85,11 @@
     <string name="close">Close</string>
     <string name="label_editing">Editing</string>
     <string name="label_external_show">Sentence breaking</string>
+    <string name="error_google_play_miss">google play service missing</string>
+    <string name="error_google_play_update_requires">google play service update required</string>
+    <string name="error_google_play_dissabled">google play service dissabled</string>
+    <string name="error_google_play_loadfail">google play service load fail</string>
+    <string name="admob_banner_ad_id">ca-app-pub-5440031222971276/3409535274</string>
+    <string name="admob_app_id">ca-app-pub-5440031222971276~2862740362</string>
+
 </resources>

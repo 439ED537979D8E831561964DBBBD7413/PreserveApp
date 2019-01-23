@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,6 +19,13 @@ import android.widget.Toast;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtilLight;
 import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
@@ -42,13 +47,13 @@ import com.social.preserve.ui.views.UpDialog;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.PermissionUtils;
-import com.social.preserve.utils.ScreenUtils;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +62,10 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.google.android.gms.common.ConnectionResult.SERVICE_DISABLED;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_MISSING;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
 
 public class MainActivity extends BaseActivity {
 
@@ -68,15 +77,17 @@ public class MainActivity extends BaseActivity {
     View downloadProgressLayout;
     @BindView(R.id.tv_progress)
     TextView downloadProgressTv;
+    @BindView(R.id.adView)
+    AdView mAdView;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private String[] mTitles = {"", "", "", ""};
     private int[] mIconUnselectIds = {
-            R.mipmap.tab_home_unselect, R.mipmap.tab_speech_unselect,
-            R.mipmap.tab_contact_unselect, R.mipmap.tab_more_unselect};
+            R.mipmap.tab_shortvideo_unselect, R.mipmap.tab_landvideo_unselect,
+            R.mipmap.tab_fav_unselect, R.mipmap.tab_mine_unselect};
     private int[] mIconSelectIds = {
-            R.mipmap.tab_home_select, R.mipmap.tab_speech_select,
-            R.mipmap.tab_contact_select, R.mipmap.tab_more_select};
+            R.mipmap.tab_shortvideo_select, R.mipmap.tab_landvideo_select,
+            R.mipmap.tab_fav_select, R.mipmap.tab_mine_select};
     private HomeFragment mHomeFrag;
     private FavouriteFragment mFavFrag;
     private LivePlayFragment mLivePlayFrag;
@@ -90,11 +101,71 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         PermissionUtils.setPermission(this, PermissionUtils.requestPermissions, PermissionUtils.REQUESTCODE_MULTI);
+        fullScreen();
         initView();
         checkUpdate();
         initDownloadService();
         initVideoManager();
+        initAdvertise();
     }
+
+    private void initAdvertise() {
+        int errorCode = GooglePlayServicesUtilLight.isGooglePlayServicesAvailable(this);
+        if( ConnectionResult.SUCCESS != errorCode )
+        {
+            String errorMsg="";
+            if(errorCode==SERVICE_MISSING){
+                errorMsg=getString(R.string.error_google_play_miss);
+            }else if(errorCode==SERVICE_VERSION_UPDATE_REQUIRED){
+                errorMsg=getString(R.string.error_google_play_update_requires);
+            }else if(errorCode==SERVICE_DISABLED){
+                errorMsg=getString(R.string.error_google_play_dissabled);
+            }else{
+                errorMsg=getString(R.string.error_google_play_loadfail);
+            }
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+//        AdvertisingIdClient.Info adInfo = null;
+//        try {
+//            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
+//
+//        } catch (IOException e) {
+//            // Unrecoverable error connecting to Google Play services (e.g.,
+//            // the old version of the service doesn't support getting AdvertisingId).
+//            e.printStackTrace();
+//            return;
+//        } catch (GooglePlayServicesNotAvailableException e) {
+//            // Google Play services is not available entirely.
+//            e.printStackTrace();
+//            return;
+//        } catch (IllegalStateException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return;
+//        } catch (GooglePlayServicesRepairableException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//            return;
+//        }
+//        String id = adInfo.getId();
+//        boolean isLAT = adInfo.isLimitAdTrackingEnabled();
+//        Log.d(TAG, "getAdvertiseId: id "+id+",isLAT "+isLAT);
+
+
+        // Create an ad request. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+
+        // Start loading the ad in the background.
+        mAdView.loadAd(adRequest);
+
+    }
+
     private void initVideoManager(){
         VideoManager.getInstace().initData();
     }
@@ -341,13 +412,18 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         updateDownloadView();
         DownloadManager.getInstace().registerDownloadListener(mDownloadListener);
-
+        if (mAdView != null) {
+            mAdView.resume();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         DownloadManager.getInstace().unregisterDownloadListener(mDownloadListener);
+        if (mAdView != null) {
+            mAdView.pause();
+        }
     }
 
     private void updateDownloadView(){
@@ -365,6 +441,13 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+    }
 
     private DownloadManager.OnDownloadListener mDownloadListener =  new DownloadManager.OnDownloadListener() {
         @Override

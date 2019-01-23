@@ -374,11 +374,12 @@ public class ImageTools2 {
             displayLocal(imageView,R.mipmap.default_img);
             return;
         }
-//        if (uri.charAt(0) == '/') {
-//            uri = "file://" + uri;
-//        }else if (!uri.startsWith("http")) {
-//            uri = getPath() + uri + "_400";
-//        }
+        if (uri.charAt(0) == '/') {
+            uri = "file://" + uri;
+        }else {
+//            uri = uri + "_400";
+        }
+
         ImageLoader.getInstance().displayImage(uri,imageView, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {
@@ -413,11 +414,11 @@ public class ImageTools2 {
             displayLocal(imageView,R.mipmap.default_img);
             return;
         }
-//        if (uri.charAt(0) == '/') {
-//            uri = "file://" + uri;
-//        }else if (!uri.startsWith("http")) {
-//            uri = getPath() + uri + "_800";
-//        }
+        if (uri.charAt(0) == '/') {
+            uri = "file://" + uri;
+        }else {
+//            uri = uri + "_800";
+        }
         ImageLoader.getInstance().displayImage(uri,imageView, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {

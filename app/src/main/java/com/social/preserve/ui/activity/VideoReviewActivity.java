@@ -844,7 +844,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 //            }else{
                 holder.lockedStateLayout.setVisibility(View.GONE);
 //                holder.ivPlay.setVisibility(View.VISIBLE);
-                holder.pbLoading.setVisibility(View.VISIBLE);
+                holder.pbLoading.setVisibility(View.GONE);
                 List<VideoModel> videoList = new ArrayList<>();
                 videoList.add(new VideoModel(video.getVideoUrl(),"",new StandardVideoController(VideoReviewActivity.this), false));
                 holder.videoView.setVideos(videoList);

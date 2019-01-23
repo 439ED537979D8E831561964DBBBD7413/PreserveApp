@@ -69,7 +69,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             mImmersionBar.statusBarDarkFont(true);
         }
         mImmersionBar.statusBarColor(R.color.white)
-//                .transparentNavigationBar()
                 .navigationBarColor(R.color.black_53)
                 .flymeOSStatusBarFontColor(R.color.black_53)  //修改flyme OS状态栏字体颜色
                 .init();

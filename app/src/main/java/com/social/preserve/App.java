@@ -12,11 +12,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.google.android.gms.ads.MobileAds;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -38,6 +41,9 @@ import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.social.preserve.account.AccountManager;
+import com.social.preserve.utils.Config;
+import com.tendcloud.tenddata.TCAgent;
+import com.tendcloud.tenddata.TalkingDataEAuth;
 
 import org.xutils.x;
 
@@ -53,7 +59,7 @@ import javax.net.ssl.SSLSession;
  * Created by pt198 on 08/01/2019.
  */
 
-public class App extends Application {
+public class App extends MultiDexApplication {
     public static int screenWidth ;
     public static int screenHeight ;
     public static int statuBarHeight ;
@@ -63,6 +69,7 @@ public class App extends Application {
     //版本信息
     public static String appVersion = "", deviceId = "", deviceModel = "", osType = "", osVersion = "", appVersionName = "", channel = "", appList = "";
     public static Activity currActivity;
+
     public static App getInstance() {
         return sInstance;
     }
@@ -88,6 +95,11 @@ public class App extends Application {
         });
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -250,8 +262,25 @@ public class App extends Application {
         }
     }
     private void initThirdLibrary(){
+        initTalkingData();
+        initMobAds();
         initXutils();
         initImageLoader();
+
+    }
+    private void initMobAds(){
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
+    }
+    private void initTalkingData(){
+        TCAgent.LOG_ON=true;
+        // App ID: 在TalkingData创建应用后，进入数据报表页中，在“系统设置”-“编辑应用”页面里查看App ID。
+        // 渠道 ID: 是渠道标识符，可通过不同渠道单独追踪数据。
+        TCAgent.init(this, Config.TALKING_DATA_APP_ID, Config.TALKING_DATA_CHANNEL_ID);
+        // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
+        TCAgent.setReportUncaughtExceptions(true);
+//        String eAuthSecretID = "";
+//        TalkingDataEAuth.initEAuth(this.getApplicationContext(),getResources().getString(R.string.talking_data_app_id),eAuthSecretID);
+
     }
     private void initXutils(){
         //引入xutil

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -130,6 +131,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
         holder.ijkVideoView.setUrl(video.getVideoUrl());
 //        holder.ijkVideoView.setTitle(video.getName());
         holder.ijkVideoView.setVideoController(holder.controller);
+
     }
 
 
