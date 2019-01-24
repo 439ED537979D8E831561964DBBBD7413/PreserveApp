@@ -16,6 +16,7 @@ import com.social.preserve.R;
 import com.social.preserve.ui.fragment.DownloadedLandtVideoFrag;
 import com.social.preserve.ui.fragment.DownloadedShortVideoFrag;
 import com.social.preserve.ui.views.DownloadVideoMoreOpeWindow;
+import com.tendcloud.tenddata.TCAgent;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -53,6 +54,7 @@ public class MyDownloadActivity extends BaseActivity {
     private String mFavShortVideoUrl = "";
     DownloadedShortVideoFrag shortVideoFrag;
     DownloadedLandtVideoFrag landtVideoFrag;
+    private static final String TAG = "MyDownloadActivity";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +130,7 @@ public class MyDownloadActivity extends BaseActivity {
         return R.layout.activity_my_download;
     }
     private int mCurrentTabIndex=0;
+    private int mLastPos;
     private void initIndicatorAndViewPager() {
 
 
@@ -142,6 +145,11 @@ public class MyDownloadActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 mCurrentTabIndex=position;
+                if(mLastPos!=position){
+                    TCAgent.onPageStart(MyDownloadActivity.this,"Download"+mTitles[position]);
+                    TCAgent.onPageEnd(MyDownloadActivity.this,"Download"+mTitles[mLastPos]);
+                }
+                mLastPos=position;
             }
 
             @Override
@@ -202,6 +210,19 @@ public class MyDownloadActivity extends BaseActivity {
         mMagicIndicator.setNavigator(mCommonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, segVp);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TCAgent.onPageEnd(this,TAG);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TCAgent.onPageStart(this,TAG);
+    }
+
 
     @OnClick({R.id.tv_all, R.id.tv_del})
     public void onViewClicked(View view) {

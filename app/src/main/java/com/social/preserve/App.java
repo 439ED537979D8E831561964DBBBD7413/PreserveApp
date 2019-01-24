@@ -20,6 +20,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -42,6 +43,7 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.social.preserve.account.AccountManager;
 import com.social.preserve.utils.Config;
+import com.social.preserve.utils.PreferencesHelper;
 import com.tendcloud.tenddata.TCAgent;
 import com.tendcloud.tenddata.TalkingDataEAuth;
 
@@ -69,9 +71,15 @@ public class App extends MultiDexApplication {
     //版本信息
     public static String appVersion = "", deviceId = "", deviceModel = "", osType = "", osVersion = "", appVersionName = "", channel = "", appList = "";
     public static Activity currActivity;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
+    public static String locale;
+    private PreferencesHelper mLanguageHelper;
     public static App getInstance() {
         return sInstance;
+    }
+
+    public PreferencesHelper getLanguageHelper() {
+        return mLanguageHelper;
     }
 
     static {
@@ -163,9 +171,19 @@ public class App extends MultiDexApplication {
     };
     public void setLanguage(Locale language) {
         this.mLanguage = language;
+        this.locale=language.toString();
     }
 
     private void initConfig(){
+        mLanguageHelper=new PreferencesHelper(this,"languageHelper");
+        String lan=mLanguageHelper.getValue("lan");
+        if(lan!=null){
+            mLanguage=new Locale(lan);
+            locale=lan;
+        }else {
+            mLanguage = Locale.getDefault();
+            locale = Locale.getDefault().toString();
+        }
         widthAndHeight();
         deviceInfo();
         AccountManager.getInstace().init();
@@ -263,13 +281,20 @@ public class App extends MultiDexApplication {
     }
     private void initThirdLibrary(){
         initTalkingData();
+        initFireBase();
         initMobAds();
         initXutils();
         initImageLoader();
 
     }
+    private void initFireBase(){
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+    }
     private void initMobAds(){
         MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
+//        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
     }
     private void initTalkingData(){
         TCAgent.LOG_ON=true;
@@ -278,8 +303,9 @@ public class App extends MultiDexApplication {
         TCAgent.init(this, Config.TALKING_DATA_APP_ID, Config.TALKING_DATA_CHANNEL_ID);
         // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
         TCAgent.setReportUncaughtExceptions(true);
+//        String eAppId="";
 //        String eAuthSecretID = "";
-//        TalkingDataEAuth.initEAuth(this.getApplicationContext(),getResources().getString(R.string.talking_data_app_id),eAuthSecretID);
+//        TalkingDataEAuth.initEAuth(this.getApplicationContext(),eAppId,eAuthSecretID);
 
     }
     private void initXutils(){

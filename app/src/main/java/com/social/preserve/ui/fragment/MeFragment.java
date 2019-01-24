@@ -1,5 +1,6 @@
 package com.social.preserve.ui.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -39,6 +40,7 @@ import com.social.preserve.ui.views.UpDialog;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.ImageTools2;
+import com.social.preserve.utils.LanguageConfig;
 import com.social.preserve.utils.ThirdLoginUtils;
 
 import org.xutils.common.Callback;
@@ -103,6 +105,7 @@ public class MeFragment extends BaseFragment {
         initLanguageInfo();
         initVersionCode();
         initUserInfo();
+        Log.d(TAG, "initView: lan "+Locale.getDefault().toString());
     }
 
     private void initUserInfo(){
@@ -123,7 +126,7 @@ public class MeFragment extends BaseFragment {
         Resources resources = getContext().getResources();
         Configuration config = resources.getConfiguration();
         // 应用用户选择语言
-        tvLanguage.setText(config.locale.getLanguage());
+        tvLanguage.setText(config.locale.toString());
     }
 
     private void setLanguage(Locale language){
@@ -131,10 +134,11 @@ public class MeFragment extends BaseFragment {
         DisplayMetrics dm = resources.getDisplayMetrics();
         Configuration config = resources.getConfiguration();
         // 应用用户选择语言
-        config.locale = language;
+        config.locale=language;
         resources.updateConfiguration(config, dm);
         tvLanguage.setText(config.locale.toString());
         App.getInstance().setLanguage(language);
+        App.getInstance().getLanguageHelper().setValue("lan",language.toString());
     }
 
     private void initVersionCode(){
@@ -157,13 +161,13 @@ public class MeFragment extends BaseFragment {
     private void loadLanguageData(){
         loading(getString(R.string.loading));
         mLanguages.clear();
-        mLanguages.add(new LanguageListModel("1","zh"));
-        mLanguages.add(new LanguageListModel("2","en"));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_CHINESE,Locale.SIMPLIFIED_CHINESE.toString()));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_EN,Locale.ENGLISH.toString()));
         LanguageSeDialog language=new LanguageSeDialog(getContext(), mLanguages, new LanguageListAdapter.OnLanguageClickListener() {
             @Override
             public void onClick(int position) {
                 if(position==0){
-                    setLanguage(Locale.CHINESE);
+                    setLanguage(Locale.SIMPLIFIED_CHINESE);
                 }else{
                     setLanguage(Locale.ENGLISH);
                 }

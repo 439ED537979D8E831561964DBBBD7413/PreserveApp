@@ -89,13 +89,13 @@ public class ShortVideoAdapter extends RecyclerView.Adapter<ShortVideoAdapter.Vi
             holder.ivVideo.setTag(R.id.iv_video,video.getCover());
             ImageTools2.show400(holder.ivVideo,video.getCover() );
         }
-        if(video.getTitle()!=null) {
-            int length = video.getTitle().length();
+        if(video.getPublisher()!=null) {
+            int length = video.getPublisher().length();
             if (length > 8) {
-                holder.tvName.setText(video.getTitle().substring(0, 8) + "...");
+                holder.tvName.setText(video.getPublisher().substring(0, 8) + "...");
             } else {
 
-                holder.tvName.setText(video.getTitle());
+                holder.tvName.setText(video.getPublisher());
             }
         }else{
             holder.tvName.setText("");

@@ -27,6 +27,8 @@ import com.social.preserve.ui.activity.MainActivity;
 import com.social.preserve.ui.activity.VideoReviewActivity;
 import com.social.preserve.ui.views.VideoMoreOpeWindow;
 import com.social.preserve.utils.ImageTools2;
+import com.social.preserve.utils.TalkingDataKeyEvent;
+import com.tendcloud.tenddata.TCAgent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -107,7 +109,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
 //
 //            holder.tvName.setText(video.getName());
 //        }
-        holder.videoName.setText(video.getTitle());
+        holder.videoName.setText(video.getPublisher());
         holder.contentTv.setText(video.getDescribed());
         holder.tagsTv.setText(video.getLabel());
         holder.content.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +126,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "ivMore onClick: ");
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHOW_LAND_VIDEO_MORE_OPE_MENU);
                 VideoMoreOpeWindow.show((Activity)mContext,video, holder.ivMore);
             }
         });

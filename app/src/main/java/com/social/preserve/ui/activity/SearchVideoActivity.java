@@ -32,6 +32,7 @@ import com.social.preserve.ui.views.tagview.TagContainerLayout;
 import com.social.preserve.ui.views.tagview.TagView;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ScreenUtils;
+import com.tendcloud.tenddata.TCAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class SearchVideoActivity extends BaseActivity {
     private List<PreserveVideo> mSearchDatas=new ArrayList<>();
     private int page;
     private boolean isShortVideo;
+    private static final String TAG = "SearchVideoActivity";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,6 +297,19 @@ public class SearchVideoActivity extends BaseActivity {
         loading(getString(R.string.loading));
         loadData();
 
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TCAgent.onPageEnd(this,TAG);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TCAgent.onPageStart(this,TAG);
     }
 
     @OnClick({R.id.iv_back, R.id.iv_search})

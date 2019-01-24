@@ -19,6 +19,8 @@ import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.ui.activity.VideoReviewActivity;
 import com.social.preserve.utils.ScreenUtils;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.TalkingDataKeyEvent;
+import com.tendcloud.tenddata.TCAgent;
 
 import java.util.HashMap;
 
@@ -42,6 +44,7 @@ public class VideoMoreOpeWindow {
         addFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 pop.dismiss();
                 boolean isFav=false;
                 for(int i = 0; i< VideoManager.getInstace().getLandFavVideos().size(); i++){
@@ -56,6 +59,7 @@ public class VideoMoreOpeWindow {
                     ivAddFav.setImageResource(R.mipmap.icon_unfav);
 
                 }else{
+                    TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.ADD_FAV_LAND_VIDEO);
                     Toast.makeText(App.getInstance(), App.getInstance().getString(R.string.add_to_fav_list), Toast.LENGTH_SHORT).show();
                     VideoManager.getInstace().addVideoToFav(video,false);
                     ivAddFav.setImageResource(R.mipmap.icon_fav);
@@ -65,6 +69,7 @@ public class VideoMoreOpeWindow {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_LAND_VIDEO);
                 pop.dismiss();
                 Toast.makeText(App.getInstance(), App.getInstance().getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
                 DownloadManager.getInstace().submitDownloadVideoTask(video.getVideoUrl(),System.currentTimeMillis()+".mp4",video.getCover(),false);
@@ -73,6 +78,7 @@ public class VideoMoreOpeWindow {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
                 pop.dismiss();
                 String url=video.getVideoUrl();
                 ShareUtils.shareFaceBook(activity, "", "", url, new PlatformActionListener(){

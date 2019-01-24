@@ -92,8 +92,8 @@ public class ShortVideoTypeFragment extends BaseFragment {
             @Override
             public void loadMore() {
 
-                    page++;
-                    loadData();
+                page++;
+                loadData();
 
             }
 

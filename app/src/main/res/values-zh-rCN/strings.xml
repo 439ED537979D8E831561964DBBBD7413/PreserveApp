@@ -45,7 +45,7 @@
     <string name="str_switch_player">multiple player change</string>
     <string name="str_start_pip">Float window</string>
     <string name="face_login">Facebook login</string>
-    <string name="label_download">My downloads</string>
+    <string name="label_download">我的下载</string>
     <string name="label_history">History</string>
     <string name="label_language">Language</string>
     <string name="label_check_update">Check Update</string>

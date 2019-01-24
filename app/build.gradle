@@ -115,6 +115,11 @@ dependencies {
     implementation files('libs/tbs_sdk_thirdapp_v3.6.0.1325_43613_sharewithdownload_withoutGame_obfs_20180807_151115.jar')
     implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
     compile files('libs/GooglePlay_AppAnalytics_Android_SDK_V4.0.24.jar')
-    implementation "com.google.android.gms:play-services-ads:17.1.2"
+    implementation "com.google.android.gms:play-services-ads:11.0.4"
+    implementation "com.google.firebase:firebase-core:11.0.4"
+    implementation 'com.google.firebase:firebase-analytics:11.0.4'
     implementation 'com.android.support:multidex:1.0.3'
+
 }
+
+apply plugin: 'com.google.gms.google-services'

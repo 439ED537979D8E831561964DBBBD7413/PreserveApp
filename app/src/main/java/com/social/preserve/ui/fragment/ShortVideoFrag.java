@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.model.VideoType;
 import com.social.preserve.network.MyException;
@@ -22,6 +23,8 @@ import com.social.preserve.network.MyResponseCallback;
 import com.social.preserve.ui.activity.SearchVideoActivity;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ScreenUtils;
+import com.social.preserve.utils.TalkingDataKeyEvent;
+import com.tendcloud.tenddata.TCAgent;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -66,6 +69,7 @@ public class ShortVideoFrag extends BaseFragment {
         mSearchIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SEARCH_SHORT_VIDEO);
                 Intent search=new Intent(getContext(), SearchVideoActivity.class);
                 search.putExtra("isShortVideo",true);
                 getContext().startActivity(search);
@@ -100,6 +104,7 @@ public class ShortVideoFrag extends BaseFragment {
         }
         initIndicatorAndViewPager();
     }
+    private int mLastPos;
     private void initIndicatorAndViewPager(){
 
 
@@ -113,7 +118,11 @@ public class ShortVideoFrag extends BaseFragment {
 
             @Override
             public void onPageSelected(int position) {
-
+                if(mLastPos!=position){
+                    TCAgent.onPageStart(getContext(),mTitles[position]);
+                    TCAgent.onPageEnd(getContext(),mTitles[mLastPos]);
+                }
+                mLastPos=position;
             }
 
             @Override

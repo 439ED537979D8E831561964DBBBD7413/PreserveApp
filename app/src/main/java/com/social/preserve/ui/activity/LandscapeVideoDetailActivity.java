@@ -26,6 +26,8 @@ import com.social.preserve.ui.adapter.OtherVideoAdapter;
 import com.social.preserve.ui.views.HotokRefreshLayout;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.TalkingDataKeyEvent;
+import com.tendcloud.tenddata.TCAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +117,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
 
             ivLike.setImageResource(R.mipmap.ic_video_fav_gray);
         }
-        tvTitle.setText(mVideo.getTitle());
+        tvTitle.setText(mVideo.getPublisher());
         tvContent.setText(mVideo.getDescribed());
         tvTags.setText(mVideo.getLabel());
     }
@@ -249,6 +251,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         videoPlayer.pause();
+        TCAgent.onPageEnd(this,TAG);
     }
 
     @Override
@@ -257,6 +260,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
         if (!mPlayComplete) {
             videoPlayer.start();
         }
+        TCAgent.onPageStart(this,TAG);
     }
 
     @Override
@@ -272,6 +276,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.ll_like:
+
                 boolean isFav = false;
                 for (int i = 0; i < VideoManager.getInstace().getLandFavVideos().size(); i++) {
                     if (VideoManager.getInstace().getLandFavVideos().get(i).getId().equals(mVideo.getId())) {
@@ -285,17 +290,20 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
                     ivLike.setImageResource(R.mipmap.ic_video_fav_gray);
 
                 } else {
+                    TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.ADD_FAV_LAND_VIDEO);
                     Toast.makeText(App.getInstance(), App.getInstance().getString(R.string.add_to_fav_list), Toast.LENGTH_SHORT).show();
                     VideoManager.getInstace().addVideoToFav(mVideo, false);
                     ivLike.setImageResource(R.mipmap.icon_fav);
                 }
                 break;
             case R.id.ll_download:
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_LAND_VIDEO);
                 Toast.makeText(this, getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
                 DownloadManager.getInstace().submitDownloadVideoTask(mVideo.getVideoUrl(), System.currentTimeMillis() + ".mp4", mVideo.getCover(), false);
                 break;
             case R.id.ll_share:
 //                loading(getString(R.string.loading));
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
                 String url = mVideo.getVideoUrl();
                 ShareUtils.shareFaceBook(this, "", "", url, new PlatformActionListener() {
 

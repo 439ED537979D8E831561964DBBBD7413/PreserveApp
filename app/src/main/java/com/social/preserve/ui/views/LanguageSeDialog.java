@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class LanguageSeDialog extends Dialog{
     private final Context mContext;
     private List<LanguageListModel> data = new ArrayList<>();
     private LanguageListAdapter.OnLanguageClickListener listener;
+    private static final String TAG = "LanguageSeDialog";
     public LanguageSeDialog(@NonNull Context context, List<LanguageListModel> data, LanguageListAdapter.OnLanguageClickListener listener) {
         super(context, R.style.CustomDialogStyle);
         this.mContext = context;
@@ -43,9 +45,11 @@ public class LanguageSeDialog extends Dialog{
         RecyclerView rv = view.findViewById(R.id.languagese_rv);
         final LanguageListAdapter adapter = new LanguageListAdapter(mContext,data);
         if(data != null) {
+            Log.d(TAG, "onCreate: App.getInstance().getLanguage() "+App.getInstance().getLanguage());
             for (int position = 0; position < data.size(); position++) {
                 if (data.get(position).language != null && App.getInstance().getLanguage() != null) {
-                    if (data.get(position).language.equals(App.getInstance().getLanguage())) {
+                    if (data.get(position).language.equals(App.getInstance().getLanguage().toString())) {
+                        Log.d(TAG, "adapter.setCheckPos: ");
                         adapter.setCheckPos(position);
                     }
                 }

@@ -53,15 +53,16 @@
             android:textSize="16sp"
             />
     </LinearLayout>
+
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
+        android:id="@+id/ad_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/admob_banner_ad_id">
-    </com.google.android.gms.ads.AdView>
+        ads:adUnitId="@string/admob_banner_ad_id"
+        android:visibility="gone"/>
+
 
 </RelativeLayout>

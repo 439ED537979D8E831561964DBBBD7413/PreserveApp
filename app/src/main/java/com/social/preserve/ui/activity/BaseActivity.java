@@ -3,6 +3,7 @@ package com.social.preserve.ui.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.gyf.barlibrary.ImmersionBar;
 import com.social.preserve.R;
 import com.social.preserve.ui.views.CenterLoadingView;
+import com.tendcloud.tenddata.TCAgent;
 
 
 import butterknife.OnClick;
@@ -34,10 +36,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        setContentView(getRootLayoutResId());
         initView();
     }
-
+    protected int getRootLayoutResId(){
+        return R.layout.activity_base;
+    }
     public void showMoreOpeIv(){
         tvCommonRight.setVisibility(View.GONE);
         ivMoreOpe.setVisibility(View.VISIBLE);
@@ -116,6 +120,19 @@ public abstract class BaseActivity extends AppCompatActivity {
             loading.show();
         }
         return loading;
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override

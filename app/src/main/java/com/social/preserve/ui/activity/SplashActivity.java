@@ -6,10 +6,11 @@ import android.os.Handler;
 import android.view.View;
 
 import com.social.preserve.R;
+import com.tendcloud.tenddata.TCAgent;
 
 
 public class SplashActivity extends BaseActivity {
-
+    private static final String TAG = "SplashActivity";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,5 +34,17 @@ public class SplashActivity extends BaseActivity {
         Intent main=new Intent(this,MainActivity.class);
         startActivity(main);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TCAgent.onPageEnd(this,TAG);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TCAgent.onPageStart(this,TAG);
     }
 }

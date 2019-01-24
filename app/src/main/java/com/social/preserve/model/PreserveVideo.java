@@ -12,14 +12,14 @@ public class PreserveVideo implements Serializable{
     String cover;
     String id;
     String label;
-    String title;
+    String publisher;
 
-    public void setTitle(String content) {
-        this.title = content;
+    public void setPublisher(String content) {
+        this.publisher = content;
     }
 
-    public String getTitle() {
-        return title;
+    public String getPublisher() {
+        return publisher;
     }
 
     public String getVideoUrl() {
@@ -34,8 +34,8 @@ public class PreserveVideo implements Serializable{
         return described;
     }
 
-    public void setDescribed(String name) {
-        this.described = name;
+    public void setDescribed(String described) {
+        this.described = described;
     }
 
     public String getCover() {
@@ -58,7 +58,7 @@ public class PreserveVideo implements Serializable{
         return label;
     }
 
-    public void setLabel(String tags) {
-        this.label = tags;
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

@@ -10,7 +10,9 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,19 +28,23 @@ import com.dingmouren.layoutmanagergroup.viewpager.ViewPagerLayoutManager;
 import com.dueeeke.dkplayer.bean.VideoModel;
 import com.dueeeke.dkplayer.widget.videoview.ListIjkVideoView;
 import com.dueeeke.videocontroller.StandardVideoController;
-import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
-import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
-import com.social.preserve.model.ThirdLoginUserData;
 import com.social.preserve.utils.ImageTools2;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.TalkingDataKeyEvent;
 import com.social.preserve.utils.TranslucentNavigationUtils;
+import com.tendcloud.tenddata.TCAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +57,9 @@ import cn.sharesdk.framework.PlatformActionListener;
 
 import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_CENTER_CROP;
 import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_MATCH_PARENT;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_DISABLED;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_MISSING;
+import static com.google.android.gms.common.ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
 
 
 /**
@@ -60,8 +69,6 @@ import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_MATCH_PAR
 public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 
     private List<PreserveVideo> videoList = new ArrayList<>();
-
-    private static final String TAG = "VideoReviewActivity";
 
     private RecyclerView mRecyclerView;
     private VideoPreviewAdapter mAdapter;
@@ -98,6 +105,8 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
     boolean isFollowing = false;
     boolean isZaning = false;
     SharedPreferences mSp;
+    private InterstitialAd mInterstitialAd;
+    private static final String TAG = "VideoReviewActivity";
     private static final String SP_KEY="short_video_guide";
     private static final String GUIDE_KEY="guide";
 
@@ -109,10 +118,55 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
         if (TranslucentNavigationUtils.checkDeviceHasNavigationBar(this)) {
             TranslucentNavigationUtils.assistActivity(findViewById(android.R.id.content));
         }
+        myGesture= new GestureDetector(this,mGestureListener);
         initView();
         initData();
         initListener();
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        myGesture.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private GestureDetector.OnGestureListener mGestureListener=new GestureDetector.OnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            float dy = Math.abs(e2.getY() - e1.getY());
+            float dx = Math.abs(e2.getX() - e1.getX());
+            Log.d(TAG, "onFling: " + (e2.getX() - e1.getX()) + ",velocityX " + velocityX +",velocityY "+velocityY+ ",dy " + dy + ",dx " + dx);
+            if (e2.getX() - e1.getX() > FLING_MIN_DISTANCE && Math.abs(velocityY) < Math.abs(velocityX)) {
+                showAdvertise();
+            }
+            return false;
+        }
+    };
 
     private void initData() {
         videoList = (List<PreserveVideo>) getIntent().getSerializableExtra("list");
@@ -141,6 +195,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+        initAdvertise();
 
     }
 
@@ -152,12 +207,8 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        TCAgent.onPageStart(this,TAG);
     }
-
-
-
-
 
 
     private void initListener() {
@@ -264,7 +315,6 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 //            fansCount(currentVideo.getTargetId() + "");
 //            updatePlayCount(currentVideo.getId() + "");
 //        }
-
         mCurrentAddFavLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -272,6 +322,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 //                    return;
 //                }
 //                toFollow(currentVideo.getTargetId() + "");
+
                 boolean isFav=false;
                 for(int i=0;i< VideoManager.getInstace().getShortFavVideos().size();i++){
                     if(VideoManager.getInstace().getShortFavVideos().get(i).getId().equals(currentVideo.getId())){
@@ -285,6 +336,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
                     currentIvFollow.setImageResource(R.mipmap.icon_unfav);
 
                 }else{
+                    TCAgent.onEvent(VideoReviewActivity.this, TalkingDataKeyEvent.ADD_FAV_SHORT_VIDEO);
                     Toast.makeText(App.getInstance(), getString(R.string.add_to_fav_list), Toast.LENGTH_SHORT).show();
                     VideoManager.getInstace().addVideoToFav(currentVideo,true);
                     currentIvFollow.setImageResource(R.mipmap.icon_fav);
@@ -323,6 +375,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
         mCurrentDownloadLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_SHORT_VIDEO);
                 Toast.makeText(App.getInstance(), getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
                 DownloadManager.getInstace().submitDownloadVideoTask(currentVideo.getVideoUrl(),System.currentTimeMillis()+".mp4",currentVideo.getCover(),true);
             }
@@ -331,6 +384,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             @Override
             public void onClick(View view) {
 //                loading(getString(R.string.loading));
+                TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_SHORT_VIDEO);
                 String url=currentVideo.getVideoUrl();
                 ShareUtils.shareFaceBook(VideoReviewActivity.this, "", "", url, new PlatformActionListener(){
 
@@ -361,67 +415,6 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
                         Toast.makeText(VideoReviewActivity.this, "share cancel", Toast.LENGTH_SHORT).show();
                     }
                 });
-//                CommonHelper.showSharePopWindow(VideoReviewActivity.this, new ShareWindow.SelectShareListener() {
-//                    @Override
-//                    public void select(String platForm) {
-//                        super.select(platForm);
-//
-//                        if(platForm.equals("1")){
-//                            CommonHelper.shareFaceBook(VideoReviewActivity.this, platForm,"share Video", "",  currentVideo.getId()+"" ,new ApiCallback<Boolean>(){
-//
-//                                @Override
-//                                public void onSuccess(Boolean data) {
-//                                    reportUserTask();
-//                                    runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            Toasty.info(mContext, "share successful ", 200,false).show();
-//
-//                                        }
-//                                    });
-//
-//                                }
-//
-//                                @Override
-//                                public void onError(final String error) {
-//                                    runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            Toasty.error(mContext, error, 200,false).show();
-//                                        }
-//                                    });
-//
-//                                }
-//                            });
-//                            return ;
-//                        }
-//                        String title = currentVideo.getNickName() + " " + getString(R.string.release_one_video);
-//                        CommonHelper.doShare(VideoReviewActivity.this, platForm, title, currentVideo.getContent(), currentVideo.getUrl(), currentVideo.getPhoto(), new ApiCallback<Boolean>() {
-//                            @Override
-//                            public void onSuccess(Boolean data) {
-//                                reportUserTask();
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        Toasty.info(mContext, "share successful ", 200,false).show();
-//                                    }
-//                                });
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(final String error) {
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        Toasty.error(mContext, error, 200,false).show();
-//                                    }
-//                                });
-//
-//                            }
-//                        });
-//                    }
-//                });
             }
         });
         mCurrentLockLayout.setOnClickListener(new View.OnClickListener() {
@@ -726,8 +719,56 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
     protected void onPause() {
         super.onPause();
         pause();
+        TCAgent.onPageEnd(this,TAG);
     }
-    
+
+    //构建手势探测器
+    GestureDetector myGesture ;
+    private static final int FLING_MIN_DISTANCE=100;
+
+    private void showAdvertise(){
+        if(mInterstitialAd==null){
+            return;
+        }
+       if(!mInterstitialAd.isLoaded()){
+            mInterstitialAd.setAdListener(new AdListener(){
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    mInterstitialAd.show();
+                }
+            });
+        }else{
+            mInterstitialAd.show();
+        }
+    }
+    private void initAdvertise() {
+        int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if( ConnectionResult.SUCCESS != errorCode )
+        {
+            String errorMsg="";
+            if(errorCode==SERVICE_MISSING){
+                errorMsg=getString(R.string.error_google_play_miss);
+            }else if(errorCode==SERVICE_VERSION_UPDATE_REQUIRED){
+                errorMsg=getString(R.string.error_google_play_update_requires);
+            }else if(errorCode==SERVICE_DISABLED){
+                errorMsg=getString(R.string.error_google_play_dissabled);
+            }else{
+                errorMsg=getString(R.string.error_google_play_loadfail);
+            }
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("043CDB9233F51548F3EFAE00026E4A93")
+                .build();
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_full_screen_ad_id));
+//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(adRequest);
+//        mCurrentAdView.animate().alpha(1.0f).setDuration(300).start();
+    }
+
 
     /**
      * 小视频adapter
@@ -756,45 +797,12 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             final PreserveVideo video = videoList.get(position);
-          //  currentVideo = video;
-
-           /* holder.ivPhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String sex = "";
-                    if (null != App.getLoginUser() && !App.getLoginUser().getuId().equals(video.getTargetId())) {
-                        if (App.getLoginUser().getSex().equals("0")) {
-                            sex = "1";
-                        } else {
-                            sex = "0";
-                        }
-                    }
-                    Log.e("liujw","####################setOnClickListener getTargetId : "+video.getTargetId());
-                    jumpActivityExtra(SpaceActivity.class, video.getTargetId() + "", sex);
-                }
-            });
-*/
-
-//            ImageTools2.show800(holder.ivCover, video.getCover());
-//            ImageTools2.showAvatar(holder.ivPhoto, video.getCover());
-
-
-//            holder.tvContent.setText(video.getName());
-            if(!TextUtils.isEmpty(video.getTitle()) && video.getTitle().length()>11){
-                holder.tvTitle.setText(video.getTitle().substring(0,10)+"...");
+            if(!TextUtils.isEmpty(video.getPublisher()) && video.getPublisher().length()>11){
+                holder.tvTitle.setText(video.getPublisher().substring(0,10)+"...");
             }else{
-                holder.tvTitle.setText(video.getTitle());
+                holder.tvTitle.setText(video.getPublisher());
             }
 
-//
-//            if(!TextUtils.isEmpty(video.getNationalFlag())){
-//                ImageTools.show200(mContext,video.getNationalFlag(),holder.ivNationFlag);
-//            }
-//            if(StringUtils.isNotNull(video.getCountry()) && video.getCountry().length()>14){
-//                holder.tvCountryName.setText(video.getCountry().substring(0,13)+"...");
-//            }else{
-//                holder.tvCountryName.setText(video.getCountry());
-//            }
             boolean isFav=false;
             for(int i=0;i< VideoManager.getInstace().getShortFavVideos().size();i++){
                 if(VideoManager.getInstace().getShortFavVideos().get(i).getId().equals(video.getId())){
@@ -811,68 +819,19 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             }
             holder.tvTags.setText(video.getLabel());
             holder.tvContent.setText(video.getDescribed());
-//            zanStatus = video.getZanStatus();
 
-//            holder.tvZanCount.setText(video.getLikeNum() + "");
-//            PlayerConfig playerConfig = new PlayerConfig.Builder()
-//                    .enableCache()
-//                    .setLooping()
-//                    .addToPlayerManager()//required
-//                        .savingProgress()
-//                    .build();
-
-
-//            boolean isLock=false;
-//            if(!"1".equals(App.getVipStatus())&&(App.getLoginUser()!=null&&"1".equals(App.getLoginUser().getSex()))){
-//                if(App.getVideoplayCount() < App.MAX_REVIEW_VIDEO_NUM){
-//                    isLock=false;
-//                }else{
-//                    if(!App.getVideoIds().contains(String.valueOf(videoList.get(position).getId()))) {
-//                        isLock=true;
-//                    }else{
-//                        isLock=false;
-//                    }
-//                }
-//            }else{
-//                isLock=false;
-//            }
-//            if(isLock){
-//                //视频锁住状态不加载
-//                holder.lockedStateLayout.setVisibility(View.VISIBLE);
-//                holder.ivPlay.setVisibility(View.GONE);
-//                holder.pbLoading.setVisibility(View.GONE);
-//            }else{
-                holder.lockedStateLayout.setVisibility(View.GONE);
+            holder.lockedStateLayout.setVisibility(View.GONE);
 //                holder.ivPlay.setVisibility(View.VISIBLE);
-                holder.pbLoading.setVisibility(View.GONE);
-                List<VideoModel> videoList = new ArrayList<>();
-                videoList.add(new VideoModel(video.getVideoUrl(),"",new StandardVideoController(VideoReviewActivity.this), false));
-                holder.videoView.setVideos(videoList);
+            holder.pbLoading.setVisibility(View.GONE);
+            List<VideoModel> videoList = new ArrayList<>();
+            videoList.add(new VideoModel(video.getVideoUrl(),"",new StandardVideoController(VideoReviewActivity.this), false));
+            holder.videoView.setVideos(videoList);
             holder.videoView.setTag(holder.controller);
             holder.videoView.setPlayerConfig(holder.mPlayerConfig);
             holder.videoView.setVideoController(holder.controller);
             holder.controller.getThumb().setVisibility(View.VISIBLE);
             holder.controller.getStartPlayButton().setVisibility(View.GONE);
             ImageTools2.show800(holder.controller.getThumb(),video.getCover());
-//            }
-//
-//            if (null != App.getLoginUser() && !App.getLoginUser().getuId().equals(video.getTargetId() + "")) {
-//                holder.llBottom.setVisibility(View.VISIBLE);
-//                if (App.getLoginUser().getSex().equals("0")) {
-//                    holder.rlGift.setVisibility(View.GONE);
-//                    holder.ivFoolow.setVisibility(View.GONE);
-//                    holder.tvFoolowCount.setVisibility(View.GONE);
-//                } else {
-//                    holder.rlGift.setVisibility(View.VISIBLE);
-//                    holder.ivFoolow.setVisibility(View.VISIBLE);
-//                    holder.tvFoolowCount.setVisibility(View.VISIBLE);
-//                }
-//            } else {
-//                holder.llBottom.setVisibility(View.GONE);
-//                holder.ivFoolow.setVisibility(View.GONE);
-//                holder.tvFoolowCount.setVisibility(View.GONE);
-//            }
-
 
         }
 

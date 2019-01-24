@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.social.preserve.App;
 
 
 import org.xutils.common.Callback;
@@ -54,7 +55,7 @@ public class MyRequest {
 //        reParams.addBodyParameter("osType", "android");
 //        reParams.addBodyParameter("osVersion", App.osVersion + "");
 //        reParams.addBodyParameter("channelCode", App.channel);
-//        reParams.addBodyParameter("osLanguage", App.locale);
+        reParams.addBodyParameter("osLanguage", App.locale);
 //        reParams.addBodyParameter("platForm", "1");
 //
 //        reParams.addBodyParameter("latitude", App.mLatitude);
@@ -187,7 +188,7 @@ public class MyRequest {
 //        reParams.addBodyParameter("osType", "android");
 //        reParams.addBodyParameter("osVersion", App.osVersion + "");
 //        reParams.addBodyParameter("channelCode", App.channel);
-//        reParams.addBodyParameter("osLanguage", App.locale);
+        reParams.addBodyParameter("osLanguage", App.locale);
 //        reParams.addBodyParameter("platForm", "1");
 //        //
 //        reParams.addBodyParameter("latitude", App.mLatitude);

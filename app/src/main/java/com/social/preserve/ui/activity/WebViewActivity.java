@@ -13,11 +13,13 @@ import com.social.preserve.R;
 import com.social.preserve.ui.views.X5WebView;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
+import com.tendcloud.tenddata.TCAgent;
 
 public class WebViewActivity extends BaseActivity {
     X5WebView webView;
     TextView tvTitle,tvClose;
     ImageView ivBack;
+    private static final String TAG = "WebViewActivity";
     private com.tencent.smtt.sdk.WebViewClient client = new com.tencent.smtt.sdk.WebViewClient() {
         /**
          * 防止加载网页时调起系统浏览器
@@ -90,6 +92,13 @@ public class WebViewActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         webView.resumeTimers();
+        TCAgent.onPageStart(this,TAG);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TCAgent.onPageEnd(this,TAG);
     }
 
     @Override

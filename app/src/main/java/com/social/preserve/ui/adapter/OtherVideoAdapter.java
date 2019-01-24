@@ -90,7 +90,7 @@ public class OtherVideoAdapter extends RecyclerView.Adapter<OtherVideoAdapter.Vi
             holder.ivVideo.setTag(R.id.iv_video, video.getCover());
             ImageTools2.show400(holder.ivVideo, video.getCover());
         }
-        holder.tvTitle.setText(video.getTitle());
+        holder.tvTitle.setText(video.getPublisher());
         holder.tagsTv.setText(video.getLabel());
         holder.rlContent.setOnClickListener(new View.OnClickListener() {
             @Override

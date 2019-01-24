@@ -66,7 +66,7 @@ public class VideoManager {
             PreserveVideo video=new PreserveVideo();
             video.setVideoUrl(path);
             video.setCover(cover);
-            video.setTitle(name);
+            video.setPublisher(name);
             Log.d(TAG, "mShortVideos: id "+id+",path "+path+",cover "+cover);
             mShortVideos.add(video);
         }
@@ -79,7 +79,7 @@ public class VideoManager {
             PreserveVideo video=new PreserveVideo();
             video.setVideoUrl(path);
             video.setCover(cover);
-            video.setTitle(name);
+            video.setPublisher(name);
             Log.d(TAG, "mLandVideos: id "+id+",path "+path+",cover "+cover);
             mLandVideos.add(video);
         }
@@ -94,7 +94,7 @@ public class VideoManager {
             PreserveVideo video=new PreserveVideo();
             video.setVideoUrl(path);
             video.setCover(cover);
-            video.setTitle(name);
+            video.setPublisher(name);
             Log.d(TAG, "mShortFavVideos: id "+id+",path "+path+",cover "+cover);
             mShortFavVideos.add(video);
         }
@@ -107,7 +107,7 @@ public class VideoManager {
             PreserveVideo video=new PreserveVideo();
             video.setVideoUrl(path);
             video.setCover(cover);
-            video.setTitle(name);
+            video.setPublisher(name);
             Log.d(TAG, "mLandFavVideos: id "+id+",path "+path+",cover "+cover);
             mLandFavVideos.add(video);
         }
@@ -115,7 +115,7 @@ public class VideoManager {
     public void saveVideoInfoToDb(PreserveVideo video,boolean isShortVideo){
         mVideoCoverHelper.setValue(video.getId(),video.getCover());
         mVideoPathHelper.setValue(video.getId(),video.getVideoUrl());
-        mVideoNameHelper.setValue(video.getId(),video.getTitle());
+        mVideoNameHelper.setValue(video.getId(),video.getPublisher());
         if(isShortVideo) {
             mShortVideoIdHelper.setVideoIDs(video.getId());
             mShortVideos.add(video);
@@ -135,7 +135,7 @@ public class VideoManager {
         }
         mVideoFavCoverHelper.setValue(video.getId(),video.getCover());
         mVideoFavPathHelper.setValue(video.getId(),video.getVideoUrl());
-        mVideoFavNameHelper.setValue(video.getId(),video.getTitle());
+        mVideoFavNameHelper.setValue(video.getId(),video.getPublisher());
     }
 
     public List<PreserveVideo> getShortFavVideos() {

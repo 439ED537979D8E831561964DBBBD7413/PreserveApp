@@ -21,7 +21,7 @@ public class ViewPagerLayoutManager extends LinearLayoutManager {
     private OnViewPagerListener mOnViewPagerListener;
     private RecyclerView mRecyclerView;
     private int mDrift;//位移，用来判断移动方向
-
+    boolean isScrollEnabled=true;
     public ViewPagerLayoutManager(Context context, int orientation) {
         super(context, orientation, false);
         init();
@@ -30,6 +30,15 @@ public class ViewPagerLayoutManager extends LinearLayoutManager {
     public ViewPagerLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
         init();
+    }
+    public void setScrollEnabled(boolean flag) {
+        this.isScrollEnabled = flag;
+    }
+
+    @Override
+    public boolean canScrollVertically() {
+        //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
+        return isScrollEnabled && super.canScrollVertically();
     }
 
     private void init() {

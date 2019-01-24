@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,11 +22,13 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.common.GooglePlayServicesUtilLight;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
@@ -47,6 +50,7 @@ import com.social.preserve.ui.views.UpDialog;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.PermissionUtils;
+import com.tendcloud.tenddata.TCAgent;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -77,7 +81,7 @@ public class MainActivity extends BaseActivity {
     View downloadProgressLayout;
     @BindView(R.id.tv_progress)
     TextView downloadProgressTv;
-    @BindView(R.id.adView)
+    @BindView(R.id.ad_view)
     AdView mAdView;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
@@ -106,63 +110,6 @@ public class MainActivity extends BaseActivity {
         checkUpdate();
         initDownloadService();
         initVideoManager();
-        initAdvertise();
-    }
-
-    private void initAdvertise() {
-        int errorCode = GooglePlayServicesUtilLight.isGooglePlayServicesAvailable(this);
-        if( ConnectionResult.SUCCESS != errorCode )
-        {
-            String errorMsg="";
-            if(errorCode==SERVICE_MISSING){
-                errorMsg=getString(R.string.error_google_play_miss);
-            }else if(errorCode==SERVICE_VERSION_UPDATE_REQUIRED){
-                errorMsg=getString(R.string.error_google_play_update_requires);
-            }else if(errorCode==SERVICE_DISABLED){
-                errorMsg=getString(R.string.error_google_play_dissabled);
-            }else{
-                errorMsg=getString(R.string.error_google_play_loadfail);
-            }
-            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-//        AdvertisingIdClient.Info adInfo = null;
-//        try {
-//            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getApplicationContext());
-//
-//        } catch (IOException e) {
-//            // Unrecoverable error connecting to Google Play services (e.g.,
-//            // the old version of the service doesn't support getting AdvertisingId).
-//            e.printStackTrace();
-//            return;
-//        } catch (GooglePlayServicesNotAvailableException e) {
-//            // Google Play services is not available entirely.
-//            e.printStackTrace();
-//            return;
-//        } catch (IllegalStateException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//            return;
-//        } catch (GooglePlayServicesRepairableException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//            return;
-//        }
-//        String id = adInfo.getId();
-//        boolean isLAT = adInfo.isLimitAdTrackingEnabled();
-//        Log.d(TAG, "getAdvertiseId: id "+id+",isLAT "+isLAT);
-
-
-        // Create an ad request. Check your logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-
-        // Start loading the ad in the background.
-        mAdView.loadAd(adRequest);
 
     }
 
@@ -233,6 +180,23 @@ public class MainActivity extends BaseActivity {
         });
 
         vpMain.setCurrentItem(0);
+
+//        AdRequest adRequest = new AdRequest.Builder()
+//                .addTestDevice("043CDB9233F51548F3EFAE00026E4A93")
+//                .build();
+//        mAdView.loadAd(adRequest);
+//        final InterstitialAd interstitialAd = new InterstitialAd(this);
+//        interstitialAd.setAdUnitId(getString(R.string.admob_full_screen_ad_id));
+////        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/8691691433");
+//        interstitialAd.loadAd(adRequest);
+//        Handler m=new Handler();
+//        m.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                interstitialAd.show();
+//            }
+//        },4000);
+
     }
 
 
@@ -412,18 +376,14 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         updateDownloadView();
         DownloadManager.getInstace().registerDownloadListener(mDownloadListener);
-        if (mAdView != null) {
-            mAdView.resume();
-        }
+        TCAgent.onPageStart(this,"MainActivity");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         DownloadManager.getInstace().unregisterDownloadListener(mDownloadListener);
-        if (mAdView != null) {
-            mAdView.pause();
-        }
+        TCAgent.onPageEnd(this,"MainActivity");
     }
 
     private void updateDownloadView(){
@@ -444,9 +404,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
+
     }
 
     private DownloadManager.OnDownloadListener mDownloadListener =  new DownloadManager.OnDownloadListener() {

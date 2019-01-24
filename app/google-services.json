@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "150710645267",
+    "firebase_url": "https://videobox-89a13.firebaseio.com",
+    "project_id": "videobox-89a13",
+    "storage_bucket": "videobox-89a13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150710645267:android:1b9cf076324e33b0",
+        "android_client_info": {
+          "package_name": "com.social.preserve"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150710645267-2lh434024ihvs48g23tnu2im88sds2km.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCouyZcEL5TttgEF4akoX-CmYazSUAEA88"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-5440031222971276~2862740362"
+    }
+  ],
+  "configuration_version": "1"
+}

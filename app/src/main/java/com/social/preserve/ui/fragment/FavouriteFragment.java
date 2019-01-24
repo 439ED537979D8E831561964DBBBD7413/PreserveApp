@@ -17,6 +17,7 @@ import com.social.preserve.R;
 import com.social.preserve.model.VideoType;
 import com.social.preserve.ui.activity.SearchVideoActivity;
 import com.social.preserve.utils.ScreenUtils;
+import com.tendcloud.tenddata.TCAgent;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -59,7 +60,7 @@ public class FavouriteFragment extends BaseFragment {
         initIndicatorAndViewPager();
     }
 
-
+    private int mLastPos;
     private void initIndicatorAndViewPager(){
 
 
@@ -73,7 +74,11 @@ public class FavouriteFragment extends BaseFragment {
 
             @Override
             public void onPageSelected(int position) {
-
+                if(mLastPos!=position){
+                    TCAgent.onPageStart(getContext(),"Fav"+mTitles[position]);
+                    TCAgent.onPageEnd(getContext(),"Fav"+mTitles[mLastPos]);
+                }
+                mLastPos=position;
             }
 
             @Override
