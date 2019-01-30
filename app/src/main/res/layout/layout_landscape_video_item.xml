@@ -157,8 +157,8 @@
                 android:src="@mipmap/icon_more"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:paddingTop="11dp"
-                android:paddingBottom="11dp"/>
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"/>
         </LinearLayout>
 
         <TextView

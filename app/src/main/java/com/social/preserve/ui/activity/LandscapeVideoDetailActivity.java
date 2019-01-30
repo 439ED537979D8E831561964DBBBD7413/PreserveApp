@@ -84,6 +84,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
     private OtherVideoAdapter mAdapter;
     private int page = 1;
     private boolean mPlayComplete;
+    long mSeekPos;
     private static final String TAG = "LandscapeVideoDetailAct";
 
     @Override
@@ -97,6 +98,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
 
     private void getIntentData() {
         mVideo = (PreserveVideo) getIntent().getSerializableExtra("video");
+        mSeekPos=getIntent().getLongExtra("seek",0);
     }
 
     private void initView() {
@@ -229,6 +231,9 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
             @Override
             public void onPrepared() {
                 mPlayComplete = false;
+                if(mSeekPos>0) {
+                    videoPlayer.seekTo(mSeekPos);
+                }
             }
 
             @Override
@@ -252,25 +257,31 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
             }
         });
         videoPlayer.start();
+
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_land_scape_video_detail;
     }
-
+    private boolean mPlaying;
     @Override
     protected void onPause() {
         super.onPause();
-        videoPlayer.pause();
+        if(videoPlayer.isPlaying()){
+            mPlaying=true;
+            videoPlayer.pause();
+        }else{
+            mPlaying=false;
+        }
         TCAgent.onPageEnd(this,TAG);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mPlayComplete) {
-            videoPlayer.start();
+        if (mPlaying) {
+            videoPlayer.resume();
         }
         TCAgent.onPageStart(this,TAG);
     }
@@ -278,7 +289,6 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        videoPlayer.stopPlayback();
     }
 
     @OnClick({R.id.iv_back, R.id.iv_like, R.id.iv_download, R.id.iv_share, R.id.ll_like, R.id.ll_download, R.id.ll_share})

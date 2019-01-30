@@ -44,6 +44,8 @@
             android:text="asd"
             android:layout_toRightOf="@+id/iv_video"
             android:textColor="@color/color_666666"
+            android:layout_below="@+id/tv_title"
+            android:layout_marginTop="5dp"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
 </RelativeLayout>

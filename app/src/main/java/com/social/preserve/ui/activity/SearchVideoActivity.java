@@ -183,7 +183,12 @@ public class SearchVideoActivity extends BaseActivity {
         Map<String, String> para = new HashMap<>();
         para.put("page","1");
         para.put("pageSize","500");
-        String url=Api.SEARCH_TAGS;
+        String url;
+        if(isShortVideo){
+            url=Api.SEARCH_SHORT_VIDEO_TAGS;
+        }else{
+            url=Api.SEARCH_LAND_VIDEO_TAGS;
+        }
         MyRequest.sendPostRequest(url, para, new MyResponseCallback<TagModel>() {
             @Override
             public void onSuccessList(List<TagModel> data) {

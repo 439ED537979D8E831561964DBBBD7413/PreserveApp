@@ -129,8 +129,13 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
         holder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VideoViewManager.instance().releaseVideoPlayer();
                 Intent intent = new Intent(mContext,LandscapeVideoDetailActivity.class) ;
+                long seek=0;
+                if(holder.ijkVideoView.isPlaying()) {
+                    seek=holder.ijkVideoView.getCurrentPosition();
+                    VideoViewManager.instance().releaseVideoPlayer();
+                }
+                intent.putExtra("seek", seek) ;
                 intent.putExtra("video", (Serializable) video) ;
                 mContext.startActivity(intent);
 

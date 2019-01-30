@@ -14,6 +14,7 @@ public class Api {
     public static final String THIRD_LOGIN=BASE_URL+"shortvideo-manager/api/threePartLogin";
     public static final String WEB_URL_POLICY=BASE_URL+"page/privacy-policy.html";
     public static final String WEB_URL_TERMS_USE=BASE_URL+"page/tos.html";
-    public static final String SEARCH_TAGS=BASE_URL+"shortvideo-manager/api/videoInfoLabel";
+    public static final String SEARCH_SHORT_VIDEO_TAGS=BASE_URL+"shortvideo-manager/api/shortVideoInfoLabel";
+    public static final String SEARCH_LAND_VIDEO_TAGS=BASE_URL+"shortvideo-manager/api/videoInfoLabel";
     public static final String RECOMMEND_VIDEOS=BASE_URL+"shortvideo-manager/api/videoList";
 }
