@@ -108,6 +108,8 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
         return new ViewHolder(mInflater.inflate(R.layout.layout_landscape_video_item, null));
     }
     private Map<String,Integer> mUrlRetryIndexMap=new HashMap<>();
+
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final PreserveVideo video = mVideos.get(position) ;
@@ -129,10 +131,12 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
         holder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(mContext,LandscapeVideoDetailActivity.class) ;
                 long seek=0;
                 if(holder.ijkVideoView.isPlaying()) {
                     seek=holder.ijkVideoView.getCurrentPosition();
+                    VideoViewManager.instance().stopPlayback();
                     VideoViewManager.instance().releaseVideoPlayer();
                 }
                 intent.putExtra("seek", seek) ;

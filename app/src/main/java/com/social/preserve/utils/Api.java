@@ -17,4 +17,5 @@ public class Api {
     public static final String SEARCH_SHORT_VIDEO_TAGS=BASE_URL+"shortvideo-manager/api/shortVideoInfoLabel";
     public static final String SEARCH_LAND_VIDEO_TAGS=BASE_URL+"shortvideo-manager/api/videoInfoLabel";
     public static final String RECOMMEND_VIDEOS=BASE_URL+"shortvideo-manager/api/videoList";
+    public static final String REPORT_USER_INFO=BASE_URL+"shortvideo-manager/api/uploadUserInfo";
 }

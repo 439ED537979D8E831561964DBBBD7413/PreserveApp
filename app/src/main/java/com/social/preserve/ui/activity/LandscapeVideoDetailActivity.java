@@ -291,7 +291,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
         super.onStop();
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_like, R.id.iv_download, R.id.iv_share, R.id.ll_like, R.id.ll_download, R.id.ll_share})
+    @OnClick({R.id.iv_back, R.id.ll_like, R.id.ll_download, R.id.ll_share})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:

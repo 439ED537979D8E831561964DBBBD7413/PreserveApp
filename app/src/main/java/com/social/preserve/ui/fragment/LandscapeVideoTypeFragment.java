@@ -16,6 +16,7 @@ import com.dueeeke.dkplayer.adapter.VideoRecyclerViewAdapter;
 import com.dueeeke.dkplayer.util.DataUtil;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.VideoViewManager;
+import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.network.MyException;

@@ -12,6 +12,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,8 +33,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -53,7 +60,13 @@ import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.social.preserve.account.AccountManager;
+import com.social.preserve.model.ApkUpdateInfo;
+import com.social.preserve.network.MyException;
+import com.social.preserve.network.MyRequest;
+import com.social.preserve.network.MyResponseCallback;
 import com.social.preserve.threadpool.FixedThreadPool;
+import com.social.preserve.ui.activity.MainActivity;
+import com.social.preserve.utils.Api;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.PreferencesHelper;
 import com.tendcloud.tenddata.TCAgent;
@@ -63,7 +76,14 @@ import org.xutils.x;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.net.ssl.HostnameVerifier;
@@ -87,6 +107,7 @@ public class App extends MultiDexApplication {
     private FirebaseAnalytics mFirebaseAnalytics;
     public static String locale;
     private PreferencesHelper mLanguageHelper;
+
     public static final int MSG_REPORT=0x766;
     public static final long MSG_REPORT_DURATION=50*1000;
     private static final String TAG = "App";
@@ -133,7 +154,7 @@ public class App extends MultiDexApplication {
         initHandler();
         initConfig();
         initThirdLibrary();
-        startReport();
+
     }
     
     
@@ -148,19 +169,101 @@ public class App extends MultiDexApplication {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case MSG_REPORT:
-                        reportAnalyseData();
+                        FixedThreadPool.getInstance().submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                final String ip=getIPAddress(App.getInstance());
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        reportAnalyseData(ip);
+                                    }
+                                });
+
+                            }
+                        });
+
                         break;
                 }
             }
         };
     }
 
-    private void reportAnalyseData(){
-        Log.d(TAG, "reportAnalyseData: ");
-        boolean reportRes=false;
-        if(!reportRes){
-            mHandler.sendEmptyMessageDelayed(MSG_REPORT,MSG_REPORT_DURATION);
+    public static String getIPAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
+                try {
+                    //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+                return ipAddress;
+            }
+        } else {
+            //当前无网络连接,请在设置中打开网络
         }
+        return null;
+    }
+
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip
+     * @return
+     */
+    public static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }
+
+
+    private void reportAnalyseData(String ip){
+        Log.d(TAG, "reportAnalyseData: ");
+        Map<String, String> para1 = new HashMap<>();
+        para1.put("adid",App.googleAdvertiseId);
+        para1.put("appVersion",appVersionName);
+        para1.put("channel",channel);
+
+        para1.put("countryRegion","");
+        para1.put("facebookNick",facebookName);
+        para1.put("ipAddress",ip);
+
+        para1.put("language",locale);
+        para1.put("openId",App.openId);
+        para1.put("systemVersion",osVersion);
+        para1.put("unitType",osType);
+        para1.put("uuid",tcAgentDeviceId);
+
+        MyRequest.sendPostRequest(Api.REPORT_USER_INFO, para1, new MyResponseCallback<Object>() {
+            @Override
+            public void onSuccess(Object data) {
+
+            }
+
+            @Override
+            public void onFailure(MyException e) {
+                super.onFailure(e);
+                mHandler.sendEmptyMessageDelayed(MSG_REPORT,MSG_REPORT_DURATION);
+            }
+        }, Object.class, false);
     }
 
     public Handler getHandler() {
@@ -224,12 +327,19 @@ public class App extends MultiDexApplication {
     }
 
     public void initGoogleAdId(){
+        int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if( ConnectionResult.SUCCESS != errorCode )
+        {
+            startReport();
+            return;
+        }
         FixedThreadPool.getInstance().execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     googleAdvertiseId = getGoogleAdId(App.getInstance());
                     Log.d(TAG, "initGoogleAdId: "+googleAdvertiseId);
+                    startReport();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -417,14 +527,15 @@ public class App extends MultiDexApplication {
             osVersion = Build.VERSION.RELEASE; // android系统版本号
             appVersionName = getAppVersionName(this);
             channel = getChannelFromApk(this, "UMENG_CHANNEL");
-            Locale locale;
+            Locale l;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                locale = getResources().getConfiguration().getLocales().get(0);
+                l = getResources().getConfiguration().getLocales().get(0);
             } else {
-                locale = getResources().getConfiguration().locale;
+                l = getResources().getConfiguration().locale;
             }
+            locale=l.toString();
             //或者仅仅使用 locale = Locale.getDefault(); 不需要考虑接口 deprecated(弃用)问题
-            systemLang = locale.getLanguage() + "-" + locale.getCountry();
+            systemLang = l.getLanguage() + "-" + l.getCountry();
             Log.e("获取手机信息", channel);
         } catch (Exception e) {
             Log.e("获取手机信息失败", e.getMessage());
@@ -455,6 +566,7 @@ public class App extends MultiDexApplication {
         // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
         TCAgent.setReportUncaughtExceptions(true);
         tcAgentDeviceId=TCAgent.getDeviceId(this);
+        Log.d(TAG, "initTalkingData: tcAgentDeviceId "+tcAgentDeviceId);
 //        String eAppId="";
 //        String eAuthSecretID = "";
 //        TalkingDataEAuth.initEAuth(this.getApplicationContext(),eAppId,eAuthSecretID);

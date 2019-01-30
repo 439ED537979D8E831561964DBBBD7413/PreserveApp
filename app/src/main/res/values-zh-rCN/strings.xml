@@ -70,7 +70,7 @@
     <string name="no_new_version">没有更新版本</string>
 
     <string name="add_to_download_list">已添加到下载列表中</string>
-    <string name="add_to_fav_list">忆添加</string>
+    <string name="add_to_fav_list">已添加</string>
     <string name="del_from_fav_list">已取消收藏</string>
     <string name="Favourite">收藏</string>
     <string name="download">下载</string>
@@ -85,7 +85,7 @@
     <string name="third_login_fail">Facebook登录失败</string>
     <string name="login_out">登出</string>
     <string name="label_fav">收藏</string>
-    <string name="close">关</string>
+    <string name="close">关闭</string>
     <string name="label_editing">编辑</string>
     <string name="label_external_show">文件管理器</string>
     <string name="error_google_play_miss">google play service missing</string>
