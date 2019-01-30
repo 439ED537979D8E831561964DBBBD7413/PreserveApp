@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dueeeke.videoplayer.player.VideoViewManager;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -60,6 +61,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -110,7 +112,24 @@ public class MainActivity extends BaseActivity {
         checkUpdate();
         initDownloadService();
         initVideoManager();
+        initLanguageConfig();
+    }
 
+    private void initLanguageConfig(){
+        String lan=App.getInstance().getLanguageHelper().getValue("lan");
+        Log.d("pengtao", "initConfig: "+lan);
+        if(lan!=null){
+            String[] tmp=lan.split("_");
+            if(tmp.length>1){
+                App.mLanguage=new Locale(tmp[0],tmp[1]);
+            }else{
+                App.mLanguage=new Locale(lan);
+            }
+            App.locale=lan;
+        }else {
+            App.mLanguage = Locale.getDefault();
+            App.locale = Locale.getDefault().toString();
+        }
     }
 
     private void initVideoManager(){
@@ -457,7 +476,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        if (keyCode == KeyEvent.KEYCODE_BACK&&!VideoViewManager.instance().onBackPressed()) {
             exitBy2Click();      //调用双击退出函数
         }
         return false;

@@ -31,6 +31,9 @@ public class VideoManager {
     PreferencesHelper mVideoFavCoverHelper;
     PreferencesHelper mVideoFavPathHelper;
     PreferencesHelper mVideoFavNameHelper;
+
+    PreferencesHelper mVideoDescHelper;
+    PreferencesHelper mVideoDownloadSuccHelper;
     private static final String TAG = "VideoManager";
     private static class SingleInstace{
         public static VideoManager instance=new VideoManager();
@@ -57,30 +60,47 @@ public class VideoManager {
         mVideoFavCoverHelper=new PreferencesHelper(App.getInstance(),"videofavCoverHelper");
         mVideoFavPathHelper=new PreferencesHelper(App.getInstance(),"videofavPathHelper");
         mVideoFavNameHelper=new PreferencesHelper(App.getInstance(),"videofavNameHelper");
+
+        mVideoDescHelper=new PreferencesHelper(App.getInstance(),"videoDescHelper");
+        mVideoDownloadSuccHelper=new PreferencesHelper(App.getInstance(),"videoDownSuccHelper");
         Set<String> ids=mShortVideoIdHelper.getVideoIdList();
         Log.d(TAG, "initData: ids "+ids.toString());
         for(String id:ids){
             String cover=mVideoCoverHelper.getValue(id);
-            String path=mVideoPathHelper.getValue(id);
+            Set<String> paths=mVideoPathHelper.getVideoPaths(id);
             String name=mVideoNameHelper.getValue(id);
+            String desc=mVideoDescHelper.getValue(id);
             PreserveVideo video=new PreserveVideo();
-            video.setVideoUrl(path);
+            List<String> urls=new ArrayList<>();
+            for(String tmp:paths){
+                urls.add(tmp);
+            }
+            video.setId(id);
+            video.setVideoUrl(urls);
             video.setCover(cover);
             video.setPublisher(name);
-            Log.d(TAG, "mShortVideos: id "+id+",path "+path+",cover "+cover);
+            video.setDescribed(desc);
+            Log.d(TAG, "mShortVideos: id "+id+",path "+urls+",cover "+cover);
             mShortVideos.add(video);
         }
         Set<String> landIds=mLandVideoIdHelper.getVideoIdList();
         Log.d(TAG, "initData: landIds "+landIds.toString());
         for(String id:landIds){
             String cover=mVideoCoverHelper.getValue(id);
-            String path=mVideoPathHelper.getValue(id);
+            Set<String> paths=mVideoPathHelper.getVideoPaths(id);
             String name=mVideoNameHelper.getValue(id);
+            String desc=mVideoDescHelper.getValue(id);
             PreserveVideo video=new PreserveVideo();
-            video.setVideoUrl(path);
+            List<String> urls=new ArrayList<>();
+            for(String tmp:paths){
+                urls.add(tmp);
+            }
+            video.setId(id);
+            video.setVideoUrl(urls);
             video.setCover(cover);
             video.setPublisher(name);
-            Log.d(TAG, "mLandVideos: id "+id+",path "+path+",cover "+cover);
+            video.setDescribed(desc);
+            Log.d(TAG, "mLandVideos: id "+id+",path "+urls+",cover "+cover);
             mLandVideos.add(video);
         }
 
@@ -89,33 +109,59 @@ public class VideoManager {
         Log.d(TAG, "initData: favids= "+favids.toString());
         for(String id:favids){
             String cover=mVideoFavCoverHelper.getValue(id);
-            String path=mVideoFavPathHelper.getValue(id);
+            Set<String> paths=mVideoFavPathHelper.getVideoPaths(id);
             String name=mVideoFavNameHelper.getValue(id);
+            String desc=mVideoDescHelper.getValue(id);
             PreserveVideo video=new PreserveVideo();
-            video.setVideoUrl(path);
+            List<String> urls=new ArrayList<>();
+            for(String tmp:paths){
+                urls.add(tmp);
+            }
+            video.setId(id);
+            video.setVideoUrl(urls);
             video.setCover(cover);
             video.setPublisher(name);
-            Log.d(TAG, "mShortFavVideos: id "+id+",path "+path+",cover "+cover);
+            video.setDescribed(desc);
+            Log.d(TAG, "mShortFavVideos: id "+id+",path "+urls+",cover "+cover);
             mShortFavVideos.add(video);
         }
         Set<String> landFavIds=mLandFavVideoIdHelper.getVideoIdList();
         Log.d(TAG, "initData: landFavIds= "+landFavIds.toString());
         for(String id:landFavIds){
             String cover=mVideoFavCoverHelper.getValue(id);
-            String path=mVideoFavPathHelper.getValue(id);
+            Set<String> paths=mVideoFavPathHelper.getVideoPaths(id);
             String name=mVideoFavNameHelper.getValue(id);
+            String desc=mVideoDescHelper.getValue(id);
             PreserveVideo video=new PreserveVideo();
-            video.setVideoUrl(path);
+            List<String> urls=new ArrayList<>();
+            for(String tmp:paths){
+                urls.add(tmp);
+            }
+            video.setId(id);
+            video.setVideoUrl(urls);
             video.setCover(cover);
             video.setPublisher(name);
-            Log.d(TAG, "mLandFavVideos: id "+id+",path "+path+",cover "+cover);
+            video.setDescribed(desc);
+            Log.d(TAG, "mLandFavVideos: id "+id+",path "+urls+",cover "+cover);
             mLandFavVideos.add(video);
         }
     }
     public void saveVideoInfoToDb(PreserveVideo video,boolean isShortVideo){
+        Set<String> ids=null;
+        if(isShortVideo) {
+            ids=mShortVideoIdHelper.getCacheVideoIds();
+        }else{
+            ids=mLandVideoIdHelper.getCacheVideoIds();
+        }
+        for(String id:ids){
+            if(id!=null&&id.equals(video.getId())){
+                return;
+            }
+        }
         mVideoCoverHelper.setValue(video.getId(),video.getCover());
-        mVideoPathHelper.setValue(video.getId(),video.getVideoUrl());
+        mVideoPathHelper.setVideoPaths(video.getId(),video.getVideoUrl());
         mVideoNameHelper.setValue(video.getId(),video.getPublisher());
+        mVideoDescHelper.setValue(video.getId(),video.getDescribed());
         if(isShortVideo) {
             mShortVideoIdHelper.setVideoIDs(video.getId());
             mShortVideos.add(video);
@@ -123,6 +169,12 @@ public class VideoManager {
             mLandVideoIdHelper.setVideoIDs(video.getId());
             mLandVideos.add(video);
         }
+    }
+    public void updateDownloadSuccToDb(String videoId){
+        mVideoDownloadSuccHelper.setValue(videoId,"true");
+    }
+    public boolean isDownloadSucc(String videoId){
+        return "true".equals(mVideoDownloadSuccHelper.getValue(videoId));
     }
     public void addVideoToFav(PreserveVideo video,boolean isShortVideo){
         if(isShortVideo){
@@ -134,8 +186,9 @@ public class VideoManager {
             mLandFavVideos.add(video);
         }
         mVideoFavCoverHelper.setValue(video.getId(),video.getCover());
-        mVideoFavPathHelper.setValue(video.getId(),video.getVideoUrl());
+        mVideoFavPathHelper.setVideoPaths(video.getId(),video.getVideoUrl());
         mVideoFavNameHelper.setValue(video.getId(),video.getPublisher());
+        mVideoDescHelper.setValue(video.getId(),video.getDescribed());
     }
 
     public List<PreserveVideo> getShortFavVideos() {
@@ -181,6 +234,7 @@ public class VideoManager {
         mVideoFavCoverHelper.remove(video.getId());
         mVideoFavPathHelper.remove(video.getId());
         mVideoFavNameHelper.remove(video.getId());
+        mVideoDescHelper.remove(video.getId());
     }
     public void delVideoFromDownload(PreserveVideo video,boolean isShortVideo){
         if(isShortVideo){
@@ -191,7 +245,8 @@ public class VideoManager {
                     Set<String> list=mShortVideoIdHelper.getVideoIdList();
                     list.remove(tmp.getId());
                     mShortVideoIdHelper.setVideoIDs(list);
-                    final File dest=new File(video.getVideoUrl());
+                    String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+                    final File dest=new File(url);
                     if(dest.exists()){
                         FixedThreadPool.getInstance().submit(new Runnable() {
                             @Override
@@ -213,7 +268,8 @@ public class VideoManager {
                     Set<String> list=mLandVideoIdHelper.getVideoIdList();
                     list.remove(tmp.getId());
                     mLandVideoIdHelper.setVideoIDs(list);
-                    final File dest=new File(video.getVideoUrl());
+                    String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+                    final File dest=new File(url);
                     if(dest.exists()){
                         FixedThreadPool.getInstance().submit(new Runnable() {
                             @Override
@@ -229,5 +285,6 @@ public class VideoManager {
         mVideoCoverHelper.remove(video.getId());
         mVideoPathHelper.remove(video.getId());
         mVideoNameHelper.remove(video.getId());
+        mVideoDescHelper.remove(video.getId());
     }
 }

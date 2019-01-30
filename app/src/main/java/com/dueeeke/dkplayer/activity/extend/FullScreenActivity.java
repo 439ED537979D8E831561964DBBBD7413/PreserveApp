@@ -44,7 +44,8 @@ public class FullScreenActivity extends AppCompatActivity{
         PlayerConfig config = new PlayerConfig.Builder().autoRotate().build();
         ijkVideoView.setPlayerConfig(config);
         ijkVideoView.setTitle(mVideo.getPublisher());
-        ijkVideoView.setUrl(mVideo.getVideoUrl());
+        String url=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(0):"";
+        ijkVideoView.setUrl(url);
         ijkVideoView.setVideoController(new FullScreenController(this));
         ijkVideoView.start();
         ijkVideoView.setOnInfoListener(new FullScreenIjkVideoView.OnInfoListener() {

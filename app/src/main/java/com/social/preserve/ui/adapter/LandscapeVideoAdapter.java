@@ -3,6 +3,7 @@ package com.social.preserve.ui.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +16,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dueeeke.dkplayer.bean.VideoModel;
+import com.dueeeke.dkplayer.widget.videoview.ListIjkVideoView;
 import com.dueeeke.videocontroller.StandardVideoController;
 import com.dueeeke.videoplayer.player.IjkVideoView;
 import com.dueeeke.videoplayer.player.PlayerConfig;
+import com.dueeeke.videoplayer.player.VideoViewManager;
 import com.social.preserve.App;
 import com.social.preserve.R;
 import com.social.preserve.download.VideoManager;
@@ -27,15 +31,21 @@ import com.social.preserve.ui.activity.MainActivity;
 import com.social.preserve.ui.activity.VideoReviewActivity;
 import com.social.preserve.ui.views.VideoMoreOpeWindow;
 import com.social.preserve.utils.ImageTools2;
+import com.social.preserve.utils.StringUtil;
 import com.social.preserve.utils.TalkingDataKeyEvent;
 import com.tendcloud.tenddata.TCAgent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_CENTER_CROP;
+import static com.dueeeke.videoplayer.player.IjkVideoView.SCREEN_SCALE_MATCH_PARENT;
 
 /**
  * Created by pt198 on 20/09/2018.
@@ -52,6 +62,10 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
     public void setVideos(List<PreserveVideo> mVideos) {
         this.mVideos.clear();
         this.mVideos.addAll(mVideos);
+        mUrlRetryIndexMap.clear();
+        for(PreserveVideo video:mVideos){
+            mUrlRetryIndexMap.put(video.getId(),0);
+        }
         notifyDataSetChanged();
     }
 
@@ -93,7 +107,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(mInflater.inflate(R.layout.layout_landscape_video_item, null));
     }
-
+    private Map<String,Integer> mUrlRetryIndexMap=new HashMap<>();
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final PreserveVideo video = mVideos.get(position) ;
@@ -111,11 +125,11 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
 //        }
         holder.videoName.setText(video.getPublisher());
         holder.contentTv.setText(video.getDescribed());
-        holder.tagsTv.setText(video.getLabel());
+        holder.tagsTv.setText(StringUtil.convertToLabels(video.getLabel()));
         holder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                VideoViewManager.instance().releaseVideoPlayer();
                 Intent intent = new Intent(mContext,LandscapeVideoDetailActivity.class) ;
                 intent.putExtra("video", (Serializable) video) ;
                 mContext.startActivity(intent);
@@ -127,14 +141,46 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
             public void onClick(View view) {
                 Log.d(TAG, "ivMore onClick: ");
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHOW_LAND_VIDEO_MORE_OPE_MENU);
-                VideoMoreOpeWindow.show((Activity)mContext,video, holder.ivMore);
+                int index=mUrlRetryIndexMap.get(video.getId());
+                VideoMoreOpeWindow.show((Activity)mContext,video, holder.ivMore,index);
             }
         });
         holder.ijkVideoView.setPlayerConfig(holder.mPlayerConfig);
-        holder.ijkVideoView.setUrl(video.getVideoUrl());
+        String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+        holder.ijkVideoView.setUrl(url);
 //        holder.ijkVideoView.setTitle(video.getName());
         holder.ijkVideoView.setVideoController(holder.controller);
+        holder.ijkVideoView.setPlayListener(new IjkVideoView.OnPlayListener() {
+            @Override
+            public void onComplete() {
 
+            }
+
+            @Override
+            public void onPrepared() {
+
+            }
+
+            @Override
+            public void onError() {
+                int index=mUrlRetryIndexMap.get(video.getId());
+                index++;
+
+                if(video.getVideoUrl()!=null&&index<video.getVideoUrl().size()){
+                    String url=video.getVideoUrl().get(index);
+                    holder.ijkVideoView.setUrl(url);
+                    holder.ijkVideoView.start();
+                }else{
+                    index=0;
+                }
+                mUrlRetryIndexMap.put(video.getId(),index);
+            }
+
+            @Override
+            public void onInfo(int what, int extra) {
+
+            }
+        });
     }
 
 
@@ -172,6 +218,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
 
         private StandardVideoController controller;
         private PlayerConfig mPlayerConfig;
+        private int currentUrlIndex;
         public ViewHolder(View view){
             super(view);
             ButterKnife.bind(this,view);
@@ -180,7 +227,7 @@ public class LandscapeVideoAdapter extends RecyclerView.Adapter<LandscapeVideoAd
             controller = new StandardVideoController(mContext);
             mPlayerConfig = new PlayerConfig.Builder()
                     .enableCache()
-                    .autoRotate()
+//                    .autoRotate()
                     .addToPlayerManager()//required
 //                        .savingProgress()
                     .build();

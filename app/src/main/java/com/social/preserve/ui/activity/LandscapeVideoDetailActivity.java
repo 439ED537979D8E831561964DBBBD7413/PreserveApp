@@ -26,6 +26,7 @@ import com.social.preserve.ui.adapter.OtherVideoAdapter;
 import com.social.preserve.ui.views.HotokRefreshLayout;
 import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.StringUtil;
 import com.social.preserve.utils.TalkingDataKeyEvent;
 import com.tendcloud.tenddata.TCAgent;
 
@@ -119,7 +120,7 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
         }
         tvTitle.setText(mVideo.getPublisher());
         tvContent.setText(mVideo.getDescribed());
-        tvTags.setText(mVideo.getLabel());
+        tvTags.setText(StringUtil.convertToLabels(mVideo.getLabel()));
     }
 
     private void initRecycleView() {
@@ -162,22 +163,22 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
         para.put("page", page + "");
         para.put("pageSize", "20");
         String tags = mVideo.getLabel();
-        StringBuilder labelIds = new StringBuilder();
-        if (tags != null) {
-            tags = tags.replace(" ", "");
-            String[] tmp = tags.split("#");
-            if (tmp != null) {
-                for (String str : tmp) {
-                    labelIds.append(str);
-                    labelIds.append(",");
-                }
-            }
-            if (labelIds.length() > 0) {
-                labelIds.deleteCharAt(labelIds.length() - 1);
-            }
-        }
-        Log.d(TAG, "loadOtherVideos: labelIds " + labelIds.toString());
-        para.put("labelId", labelIds.toString());
+//        StringBuilder labelIds = new StringBuilder();
+//        if (tags != null) {
+//            tags = tags.replace(" ", "");
+//            String[] tmp = tags.split("#");
+//            if (tmp != null) {
+//                for (String str : tmp) {
+//                    labelIds.append(str);
+//                    labelIds.append(",");
+//                }
+//            }
+//            if (labelIds.length() > 0) {
+//                labelIds.deleteCharAt(labelIds.length() - 1);
+//            }
+//        }
+//        Log.d(TAG, "loadOtherVideos: labelIds " + labelIds.toString());
+        para.put("labelId", tags);
         String url = Api.RECOMMEND_VIDEOS;
         MyRequest.sendPostRequest(url, para, new MyResponseCallback<PreserveVideo>() {
             @Override
@@ -210,13 +211,14 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
         }, PreserveVideo.class, true);
 
     }
-
+    private int currentUrlIndex;
     private void initVideo() {
         if (mVideo == null) {
             return;
         }
         List<VideoModel> videoList = new ArrayList<>();
-        videoList.add(new VideoModel(mVideo.getVideoUrl(), "", new StandardVideoController(LandscapeVideoDetailActivity.this), true));
+        String url=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(0):"";
+        videoList.add(new VideoModel(url, "", new StandardVideoController(LandscapeVideoDetailActivity.this), true));
         videoPlayer.setVideos(videoList);
         videoPlayer.setOnPlayListener(new ListIjkVideoView.OnPlayListener() {
             @Override
@@ -232,6 +234,16 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
             @Override
             public void onError() {
                 mPlayComplete = true;
+                currentUrlIndex++;
+                if(mVideo.getVideoUrl()!=null&&currentUrlIndex<mVideo.getVideoUrl().size()){
+                    List<VideoModel> videoList = new ArrayList<>();
+                    String url=mVideo.getVideoUrl().get(currentUrlIndex);
+                    videoList.add(new VideoModel(url, "", new StandardVideoController(LandscapeVideoDetailActivity.this), true));
+                    videoPlayer.setVideos(videoList);
+                    videoPlayer.start();
+                }else{
+                    currentUrlIndex=0;
+                }
             }
 
             @Override
@@ -299,13 +311,14 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
             case R.id.ll_download:
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_LAND_VIDEO);
                 Toast.makeText(this, getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
-                DownloadManager.getInstace().submitDownloadVideoTask(mVideo.getVideoUrl(), System.currentTimeMillis() + ".mp4", mVideo.getCover(), false);
+                String url=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(currentUrlIndex):"";
+                DownloadManager.getInstace().submitDownloadVideoTask(mVideo.getId(),url, System.currentTimeMillis() + ".mp4", mVideo.getCover(), false);
                 break;
             case R.id.ll_share:
 //                loading(getString(R.string.loading));
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
-                String url = mVideo.getVideoUrl();
-                ShareUtils.shareFaceBook(this, "", "", url, new PlatformActionListener() {
+                String shareUrl=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(0):"";
+                ShareUtils.shareFaceBook(this, "", "", shareUrl, new PlatformActionListener() {
 
                     @Override
                     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {

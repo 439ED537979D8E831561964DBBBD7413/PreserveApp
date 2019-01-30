@@ -1,13 +1,14 @@
 package com.social.preserve.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by pt198 on 09/01/2019.
  */
 
 public class PreserveVideo implements Serializable{
-    String videoUrl;
+    List<String> videoUrl;
     String described;
     String cover;
     String id;
@@ -22,11 +23,11 @@ public class PreserveVideo implements Serializable{
         return publisher;
     }
 
-    public String getVideoUrl() {
+    public List<String> getVideoUrl() {
         return videoUrl;
     }
 
-    public void setVideoUrl(String videoUrl) {
+    public void setVideoUrl(List<String> videoUrl) {
         this.videoUrl = videoUrl;
     }
 
@@ -47,7 +48,7 @@ public class PreserveVideo implements Serializable{
     }
 
     public String getId() {
-        return videoUrl;
+        return this.id;
     }
 
     public void setId(String id) {

@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
@@ -62,6 +63,8 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.PlatformDb;
 
+import static com.social.preserve.App.MSG_REPORT;
+
 /**
  * Created by pt198 on 08/01/2019.
  */
@@ -105,6 +108,12 @@ public class MeFragment extends BaseFragment {
         initLanguageInfo();
         initVersionCode();
         initUserInfo();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         Log.d(TAG, "initView: lan "+Locale.getDefault().toString());
     }
 
@@ -122,24 +131,60 @@ public class MeFragment extends BaseFragment {
         }
     }
 
-    private void initLanguageInfo(){
-        Resources resources = getContext().getResources();
-        Configuration config = resources.getConfiguration();
+    private void initLanguageInfo() {
+        mLanguages.clear();
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_EN, LanguageConfig.LABEL_EN));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_CHINESE, LanguageConfig.LABEL_CHINESE));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_HK, LanguageConfig.LABEL_HK));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_TAIWAN, LanguageConfig.LABEL_TAIWAN));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_TAIGUO, LanguageConfig.LABEL_TAIGUO));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_PHILINPIN, LanguageConfig.LABEL_PHILINPIN));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_MAYLA, LanguageConfig.LABEL_MAYLA));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_INDONESIA, LanguageConfig.LABEL_INDONESIA));
+        mLanguages.add(new LanguageListModel(LanguageConfig.ID_VIETNAM, LanguageConfig.LABEL_VIETNAM));
+        String languageLabel = LanguageConfig.LABEL_EN;
+        for (int position = 0; position < mLanguages.size(); position++) {
+            if (mLanguages.get(position).code != null && App.getInstance().getLanguage() != null) {
+                if (App.getInstance().getLanguage().toString().contains(mLanguages.get(position).code)) {
+                    languageLabel = mLanguages.get(position).language;
+                    break;
+                }
+            }
+        }
         // 应用用户选择语言
-        tvLanguage.setText(config.locale.toString());
+        tvLanguage.setText(languageLabel);
     }
 
-    private void setLanguage(Locale language){
-        Resources resources = getContext().getResources();
-        DisplayMetrics dm = resources.getDisplayMetrics();
-        Configuration config = resources.getConfiguration();
-        // 应用用户选择语言
-        config.locale=language;
-        resources.updateConfiguration(config, dm);
-        tvLanguage.setText(config.locale.toString());
+    private void setLanguage(Locale language,String languageLabel,String lanCode){
+        forceLocale(language);
+        tvLanguage.setText(languageLabel);
         App.getInstance().setLanguage(language);
-        App.getInstance().getLanguageHelper().setValue("lan",language.toString());
+        Log.d(TAG, "setLanguage: "+language.toString());
+        App.getInstance().getLanguageHelper().setValue("lan",lanCode);
     }
+
+    public void forceLocale(Locale locale) {
+        Configuration conf = getContext().getResources().getConfiguration();
+        updateConfiguration(conf, locale);
+        getContext().getResources().updateConfiguration(conf,  getContext().getResources().getDisplayMetrics());
+
+        Configuration systemConf = Resources.getSystem().getConfiguration();
+        updateConfiguration(systemConf, locale);
+        Resources.getSystem().updateConfiguration(conf,  getContext().getResources().getDisplayMetrics());
+
+        Locale.setDefault(locale);
+    }
+
+    public void updateConfiguration(Configuration conf, Locale locale) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            conf.setLocale(locale);
+        }else {
+            //noinspection deprecation
+            conf.locale = locale;
+        }
+    }
+
+
 
     private void initVersionCode(){
         PackageManager pm=getContext().getPackageManager();
@@ -160,17 +205,18 @@ public class MeFragment extends BaseFragment {
 
     private void loadLanguageData(){
         loading(getString(R.string.loading));
-        mLanguages.clear();
-        mLanguages.add(new LanguageListModel(LanguageConfig.ID_CHINESE,Locale.SIMPLIFIED_CHINESE.toString()));
-        mLanguages.add(new LanguageListModel(LanguageConfig.ID_EN,Locale.ENGLISH.toString()));
         LanguageSeDialog language=new LanguageSeDialog(getContext(), mLanguages, new LanguageListAdapter.OnLanguageClickListener() {
             @Override
             public void onClick(int position) {
-                if(position==0){
-                    setLanguage(Locale.SIMPLIFIED_CHINESE);
+                LanguageListModel model=mLanguages.get(position);
+                String code=model.code;
+                String[] tmp=code.split("_");
+                if(tmp!=null&&tmp.length>1){
+                    setLanguage(new Locale(tmp[0],tmp[1]),model.language,model.code);
                 }else{
-                    setLanguage(Locale.ENGLISH);
+                    setLanguage(new Locale(code),model.language,model.code);
                 }
+
             }
         });
         language.show();
@@ -273,7 +319,9 @@ public class MeFragment extends BaseFragment {
                 ImageTools2.showAvatar(avatarIv,data.getPhoto());
                 AccountManager.getInstace().setNickName(data.getNickName());
                 AccountManager.getInstace().setAvatar(data.getPhoto());
-
+                App.openId=data.getOpenId();
+                App.facebookName=data.getNickName();
+                App.getInstance().getHandler().sendEmptyMessage(MSG_REPORT);
             }
 
             @Override

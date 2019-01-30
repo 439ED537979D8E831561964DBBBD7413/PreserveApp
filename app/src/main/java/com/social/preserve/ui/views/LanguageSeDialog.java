@@ -45,12 +45,13 @@ public class LanguageSeDialog extends Dialog{
         RecyclerView rv = view.findViewById(R.id.languagese_rv);
         final LanguageListAdapter adapter = new LanguageListAdapter(mContext,data);
         if(data != null) {
-            Log.d(TAG, "onCreate: App.getInstance().getLanguage() "+App.getInstance().getLanguage());
+            Log.d(TAG, "onCreate: App.getInstance().getLanguage() "+App.getInstance().getLanguage().toString());
             for (int position = 0; position < data.size(); position++) {
-                if (data.get(position).language != null && App.getInstance().getLanguage() != null) {
-                    if (data.get(position).language.equals(App.getInstance().getLanguage().toString())) {
+                if (data.get(position).code != null && App.getInstance().getLanguage() != null) {
+                    if (App.getInstance().getLanguage().toString().contains(data.get(position).code)) {
                         Log.d(TAG, "adapter.setCheckPos: ");
                         adapter.setCheckPos(position);
+                        break;
                     }
                 }
             }

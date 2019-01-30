@@ -3,7 +3,10 @@ package com.social.preserve;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +14,14 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -42,6 +53,7 @@ import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.social.preserve.account.AccountManager;
+import com.social.preserve.threadpool.FixedThreadPool;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.PreferencesHelper;
 import com.tendcloud.tenddata.TCAgent;
@@ -52,6 +64,7 @@ import org.xutils.x;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Locale;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
@@ -66,14 +79,18 @@ public class App extends MultiDexApplication {
     public static int screenHeight ;
     public static int statuBarHeight ;
     private static App sInstance;
-    private Locale mLanguage;
+    public static Locale mLanguage;
     private String systemLang;
     //版本信息
-    public static String appVersion = "", deviceId = "", deviceModel = "", osType = "", osVersion = "", appVersionName = "", channel = "", appList = "";
+    public static String appVersion = "",facebookName="", deviceId = "", deviceModel = "", osType = "", osVersion = "", appVersionName = "", channel = "", tcAgentDeviceId = "",googleAdvertiseId="",openId="";
     public static Activity currActivity;
     private FirebaseAnalytics mFirebaseAnalytics;
     public static String locale;
     private PreferencesHelper mLanguageHelper;
+    public static final int MSG_REPORT=0x766;
+    public static final long MSG_REPORT_DURATION=50*1000;
+    private static final String TAG = "App";
+
     public static App getInstance() {
         return sInstance;
     }
@@ -108,14 +125,46 @@ public class App extends MultiDexApplication {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
-
+    private Handler mHandler;
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance=this;
+        initHandler();
         initConfig();
         initThirdLibrary();
+        startReport();
+    }
+    
+    
+    private void startReport(){
+        mHandler.sendEmptyMessage(MSG_REPORT);
+    }
+    
+    private void initHandler(){
+        mHandler=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case MSG_REPORT:
+                        reportAnalyseData();
+                        break;
+                }
+            }
+        };
+    }
 
+    private void reportAnalyseData(){
+        Log.d(TAG, "reportAnalyseData: ");
+        boolean reportRes=false;
+        if(!reportRes){
+            mHandler.sendEmptyMessageDelayed(MSG_REPORT,MSG_REPORT_DURATION);
+        }
+    }
+
+    public Handler getHandler() {
+        return mHandler;
     }
 
     public Locale getLanguage() {
@@ -174,16 +223,27 @@ public class App extends MultiDexApplication {
         this.locale=language.toString();
     }
 
+    public void initGoogleAdId(){
+        FixedThreadPool.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    googleAdvertiseId = getGoogleAdId(App.getInstance());
+                    Log.d(TAG, "initGoogleAdId: "+googleAdvertiseId);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
     private void initConfig(){
+        Config.DOWNLOAD_STORAGE_DIR= Environment.getExternalStorageDirectory() + "/"+getResources().getString(R.string.app_name)+"/download/";
+        Config.APKPATH= Config.DOWNLOAD_STORAGE_DIR+"update-release.apk";
+
         mLanguageHelper=new PreferencesHelper(this,"languageHelper");
-        String lan=mLanguageHelper.getValue("lan");
-        if(lan!=null){
-            mLanguage=new Locale(lan);
-            locale=lan;
-        }else {
-            mLanguage = Locale.getDefault();
-            locale = Locale.getDefault().toString();
-        }
+        initGoogleAdId();
         widthAndHeight();
         deviceInfo();
         AccountManager.getInstace().init();
@@ -258,6 +318,97 @@ public class App extends MultiDexApplication {
     }
 
 
+    public static String getGoogleAdId(Context context) throws Exception {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            return null;
+        }
+        PackageManager pm = context.getPackageManager();
+        pm.getPackageInfo("com.android.vending", 0);
+        AdvertisingConnection connection = new AdvertisingConnection();
+        Intent intent = new Intent(
+                "com.google.android.gms.ads.identifier.service.START");
+        intent.setPackage("com.google.android.gms");
+        if (context.bindService(intent, connection, Context.BIND_AUTO_CREATE)) {
+            try {
+                AdvertisingInterface adInterface = new AdvertisingInterface(
+                        connection.getBinder());
+                return adInterface.getId();
+            } finally {
+                context.unbindService(connection);
+            }
+        }
+        return "";
+    }
+
+    private static final class AdvertisingConnection implements ServiceConnection {
+        boolean retrieved = false;
+        private final LinkedBlockingQueue<IBinder> queue = new LinkedBlockingQueue<>(1);
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            try {
+                this.queue.put(service);
+            } catch (InterruptedException localInterruptedException) {
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        public IBinder getBinder() throws InterruptedException {
+            if (this.retrieved)
+                throw new IllegalStateException();
+            this.retrieved = true;
+            return this.queue.take();
+        }
+    }
+
+    private static final class AdvertisingInterface implements IInterface {
+        private IBinder binder;
+
+        public AdvertisingInterface(IBinder pBinder) {
+            binder = pBinder;
+        }
+
+        public IBinder asBinder() {
+            return binder;
+        }
+
+        public String getId() throws RemoteException {
+            Parcel data = Parcel.obtain();
+            Parcel reply = Parcel.obtain();
+            String id;
+            try {
+                data.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                binder.transact(1, data, reply, 0);
+                reply.readException();
+                id = reply.readString();
+            } finally {
+                reply.recycle();
+                data.recycle();
+            }
+            return id;
+        }
+
+        public boolean isLimitAdTrackingEnabled(boolean paramBoolean)
+                throws RemoteException {
+            Parcel data = Parcel.obtain();
+            Parcel reply = Parcel.obtain();
+            boolean limitAdTracking;
+            try {
+                data.writeInterfaceToken("com.google.android.gms.ads.identifier.internal.IAdvertisingIdService");
+                data.writeInt(paramBoolean ? 1 : 0);
+                binder.transact(2, data, reply, 0);
+                reply.readException();
+                limitAdTracking = 0 != reply.readInt();
+            } finally {
+                reply.recycle();
+                data.recycle();
+            }
+            return limitAdTracking;
+        }
+    }
+
+
     private void deviceInfo() {
         try {
             appVersion = getPackageInfo(this).versionCode + "";
@@ -303,6 +454,7 @@ public class App extends MultiDexApplication {
         TCAgent.init(this, Config.TALKING_DATA_APP_ID, Config.TALKING_DATA_CHANNEL_ID);
         // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
         TCAgent.setReportUncaughtExceptions(true);
+        tcAgentDeviceId=TCAgent.getDeviceId(this);
 //        String eAppId="";
 //        String eAuthSecretID = "";
 //        TalkingDataEAuth.initEAuth(this.getApplicationContext(),eAppId,eAuthSecretID);

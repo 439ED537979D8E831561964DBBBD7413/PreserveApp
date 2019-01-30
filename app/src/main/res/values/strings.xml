@@ -1,50 +1,50 @@
 <resources>
-    <string name="app_name">TinyVideo</string>
+    <string name="app_name">Tiny Video</string>
     <string name="net_error">Network is not available</string>
     <string name="error">Network connection timeout \nPlease check your network status</string>
-    <string name="no_record">No record</string>
-    <string name="load_data_fail">load data fail</string>
-    <string name="float_window_warning">no float window permission！</string>
-    <string name="error_message">something goes wrong，retry</string>
-    <string name="retry">retry</string>
-    <string name="continue_play">continue play</string>
+    <string name="no_record">No data yet</string>
+    <string name="load_data_fail">Data loading failed</string>
+    <string name="float_window_warning">Popup window disabled！</string>
+    <string name="error_message">Something went wrong. Please try again</string>
+    <string name="retry">Retry</string>
+    <string name="continue_play">Continue Play</string>
     <string name="wifi_tip">@string/dkplayer_wifi_tip</string>
-    <string name="lock_tip">unlock first！</string>
-    <string name="unlocked">unlocked</string>
-    <string name="locked">locked</string>
-    <string name="replay">replay</string>
+    <string name="lock_tip">Unlock first！</string>
+    <string name="unlocked">Unlocked</string>
+    <string name="locked">Locked</string>
+    <string name="replay">Replay</string>
     <string name="str_api">API demo</string>
-    <string name="str_list">list play</string>
-    <string name="str_extend">external function</string>
-    <string name="str_pip">Pip</string>
+    <string name="str_list">LIST</string>
+    <string name="str_extend">EXTEND</string>
+    <string name="str_pip">PiP</string>
     <string name="str_other">other:</string>
-    <string name="str_play">play</string>
+    <string name="str_play">Play</string>
     <string name="str_video_type">video type:</string>
-    <string name="str_vod">vodplay</string>
-    <string name="str_live">liveplay</string>
-    <string name="str_api_vod">vodplay</string>
-    <string name="str_api_live">liveplay</string>
-    <string name="str_rtsp_concat">rtsp and concat segement play</string>
-    <string name="str_definition">Definition change</string>
-    <string name="str_screen_shot">ScreenShot</string>
-    <string name="str_raw_or_assets">play Raw or Assets</string>
-    <string name="str_multi_player">multiple player played at the same time</string>
-    <string name="str_list_view">ListView</string>
-    <string name="str_recycler_view">RecyclerView</string>
-    <string name="str_auto_play_recycler_view">auto play RecyclerView</string>
-    <string name="str_list_fragment_viewpager">list、Fragment、ViewPager demo</string>
-    <string name="str_rotate_in_fullscreen">Fullscreen rotate demo</string>
-    <string name="str_tiktok">shake voice</string>
-    <string name="str_fullscreen_directly">fullscreen play</string>
-    <string name="str_danmu">Danmu</string>
-    <string name="str_ad">Advertise</string>
-    <string name="str_extend_rotate_in_fullscreen">Full manual rotate demo</string>
-    <string name="str_pip_demo">Pip</string>
-    <string name="str_pip_in_list">scroll to Pip</string>
-    <string name="str_pip_android_o">Android 8.0 Pip demo</string>
-    <string name="str_switch_player">multiple player change</string>
-    <string name="str_start_pip">Float window</string>
-    <string name="face_login">Facebook login</string>
+    <string name="str_vod">VOD</string>
+    <string name="str_live">LIVE</string>
+    <string name="str_api_vod">VOD</string>
+    <string name="str_api_live">LIVE</string>
+    <string name="str_rtsp_concat">Rtsp concat</string>
+    <string name="str_definition">DEFINITION</string>
+    <string name="str_screen_shot">SCREEN Short</string>
+    <string name="str_raw_or_assets">Raw or Assets</string>
+    <string name="str_multi_player">Multi-player</string>
+    <string name="str_list_view">LIST VIEW</string>
+    <string name="str_recycler_view">RECYCLER VIEW</string>
+    <string name="str_auto_play_recycler_view">AUTO PLAY RECYCLER VIEW</string>
+    <string name="str_list_fragment_viewpager">LIST FRAGMENT VIEWPAGER</string>
+    <string name="str_rotate_in_fullscreen">rotate in fullscreen</string>
+    <string name="str_tiktok">Tik Tok</string>
+    <string name="str_fullscreen_directly">FULLSCREEN DIRECTLY</string>
+    <string name="str_danmu">barrage</string>
+    <string name="str_ad">AD</string>
+    <string name="str_extend_rotate_in_fullscreen">ROTATE IN FULLSCREEN</string>
+    <string name="str_pip_demo">PiP</string>
+    <string name="str_pip_in_list">PIP IN LIST</string>
+    <string name="str_pip_android_o">PIP Android O</string>
+    <string name="str_switch_player">SWITCH PLAYER</string>
+    <string name="str_start_pip">Popup window</string>
+    <string name="face_login">Facebook Login</string>
     <string name="label_download">My downloads</string>
     <string name="label_history">History</string>
     <string name="label_language">Language</string>
@@ -52,10 +52,10 @@
     <string name="label_pic_policy">Privacy Policy</string>
     <string name="label_terms_use">Terms of Use</string>
     <string name="confirm">Confirm</string>
-    <string name="loading">loading...</string>
+    <string name="loading">Loading...</string>
     <string name="label_short_video">Short video</string>
     <string name="label_video">Video</string>
-    <string name="press_the_exit_procedure_again">Press the exit application  again.</string>
+    <string name="press_the_exit_procedure_again">Press again to exit.</string>
     <string name="appUpdate">Update</string>
     <string name="cancel">Cancel</string>
 
@@ -64,33 +64,52 @@
     <string name="preserve">preserve</string>
     <string name="umeng_channel">preserve_app</string>
     <string name="google_market">com.android.vending</string>
-    <string name="get_update_info_fail">Get apk update info fail</string>
-    <string name="no_new_version">No new version</string>
-    <string name="add_to_download_list">Add to download list already</string>
-    <string name="add_to_fav_list">Add to favourite list already</string>
-    <string name="del_from_fav_list">cancel favourite already</string>
-    <string name="Favourite">Favourite</string>
+
+    <string name="get_update_info_fail">Failed to get update information</string>
+    <string name="no_new_version">No updated version</string>
+
+    <string name="add_to_download_list">Added to the download list</string>
+    <string name="add_to_fav_list">Added</string>
+    <string name="del_from_fav_list">Removed from favorites</string>
+    <string name="Favourite">Favorites</string>
     <string name="download">Download</string>
     <string name="share">Share</string>
     <string name="label_my_download">My Download</string>
     <string name="label_all">All</string>
     <string name="label_del">Delete</string>
     <string name="label_edit">Edit</string>
-    <string name="label_downloading"> downloading...</string>
-    <string name="label_download_finish"> download finish</string>
-    <string name="label_download_fail"> download fail</string>
-    <string name="third_login_fail">facebook login fail</string>
+    <string name="label_downloading"> Downloading...</string>
+    <string name="label_download_finish"> Download finish</string>
+    <string name="label_download_fail"> Download failed</string>
+    <string name="third_login_fail">Facebook login failed</string>
     <string name="login_out">Logout</string>
     <string name="label_fav">Favorites</string>
     <string name="close">Close</string>
-    <string name="label_editing">Editing</string>
-    <string name="label_external_show">Sentence breaking</string>
+    <string name="label_editing">Edit</string>
+    <string name="label_external_show">File Manager</string>
     <string name="error_google_play_miss">google play service missing</string>
     <string name="error_google_play_update_requires">google play service update required</string>
-    <string name="error_google_play_dissabled">google play service dissabled</string>
-    <string name="error_google_play_loadfail">google play service load fail</string>
+    <string name="error_google_play_dissabled">google play service disabled</string>
+    <string name="error_google_play_loadfail">google play service load failed</string>
+
+
+
+
+
+
+
     <string name="admob_banner_ad_id">ca-app-pub-5440031222971276/3409535274</string>
     <string name="admob_full_screen_ad_id"></string>
     <string name="admob_app_id">ca-app-pub-5440031222971276~2862740362</string>
 
+
+
+
+
+
+
+
+    <string name="video_saved_in">Video saved in </string>
+    <string name="download_fail">Download fail</string>
+    <string name="download_waiting">Waiting download</string>
 </resources>

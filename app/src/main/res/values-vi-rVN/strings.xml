@@ -1,0 +1,101 @@
+<resources>
+
+    <string name="app_name">Tiny Video</string>
+    <string name="net_error">Mạng không khả dụng</string>
+    <string name="error">Hết thời gian kết nối mạng \nVui lòng kiểm tra trạng thái mạng của bạn</string>
+    <string name="no_record">Chưa có dữ liệu</string>
+    <string name="load_data_fail">Tải dữ liệu không thành công</string>
+    <string name="float_window_warning">Cửa sổ bật lên bị vô hiệu hóa</string>
+    <string name="error_message">Đã xảy ra lỗi. Vui lòng thử lại</string>
+    <string name="retry">Thử lại</string>
+    <string name="continue_play">Tiếp tục chơi</string>
+    <string name="wifi_tip">@string/dkplayer_wifi_tip</string>
+    <string name="lock_tip">Mở khóa trước</string>
+    <string name="unlocked">Đã mở khóa</string>
+    <string name="locked">Đã khóa</string>
+    <string name="replay">phát lại</string>
+    <string name="str_api">Bản demo API</string>
+    <string name="str_list">DANH SÁCH</string>
+    <string name="str_extend">MỞ RỘNG</string>
+    <string name="str_pip">PiP</string>
+    <string name="str_other">khác:</string>
+    <string name="str_play">Chơi</string>
+    <string name="str_video_type">loại video:</string>
+    <string name="str_vod">VOD</string>
+    <string name="str_live">TRỰC TIẾP</string>
+    <string name="str_api_vod">VOD</string>
+    <string name="str_api_live">TRỰC TIẾP</string>
+    <string name="str_rtsp_concat">Rtsp concat</string>
+    <string name="str_definition">ĐỊNH NGHĨA</string>
+    <string name="str_screen_shot">MÀN HÌNH ngắn</string>
+    <string name="str_raw_or_assets">Nguyên hoặc Tài sản</string>
+    <string name="str_multi_player">Nhiều người chơi</string>
+    <string name="str_list_view">XEM DANH SÁCH</string>
+    <string name="str_recycler_view">XEM HỒ SƠ</string>
+    <string name="str_auto_play_recycler_view">XEM CHƠI TRÒ CHƠI TỰ ĐỘNG</string>
+    <string name="str_list_fragment_viewpager">XEM DANH SÁCH FRAGMENT</string>
+    <string name="str_rotate_in_fullscreen">xoay trong toàn màn hình</string>
+    <string name="str_tiktok">Tik Tok</string>
+    <string name="str_fullscreen_directly">FULLSCREEN TRỰC TIẾP</string>
+    <string name="str_danmu">đập</string>
+    <string name="str_ad">QUẢNG CÁO</string>
+    <string name="str_extend_rotate_in_fullscreen">QUAY LẠI TRONG FULLSCREEN</string>
+    <string name="str_pip_demo">PiP</string>
+    <string name="str_pip_in_list">PIP TRONG DANH SÁCH</string>
+    <string name="str_pip_android_o">PIP Android O</string>
+    <string name="str_switch_player">CẦU THỦ CHUYỂN ĐỔI</string>
+    <string name="str_start_pip">Cửa sổ bật lên</string>
+    <string name="face_login">Đăng nhập Facebook</string>
+    <string name="label_download">Tải xuống của tôi</string>
+    <string name="label_history">Lịch sử</string>
+    <string name="label_language">Ngôn ngữ</string>
+    <string name="label_check_update">Kiểm tra cập nhật</string>
+    <string name="label_pic_policy">Chính sách bảo mật</string>
+    <string name="label_terms_use">Điều khoản sử dụng</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="loading">Tải...</string>
+    <string name="label_short_video">Video ngắn</string>
+    <string name="label_video">Video</string>
+    <string name="press_the_exit_procedure_again">Nhấn một lần nữa để thoát.</string>
+    <string name="appUpdate">Cập nhật</string>
+    <string name="cancel">Hủy bỏ</string>
+
+    <string name="google_channel">google2018ruixun</string>
+    <string name="google">google</string>
+    <string name="preserve">preserve</string>
+    <string name="umeng_channel">preserve_app</string>
+    <string name="google_market">com.android.vending</string>
+
+    <string name="get_update_info_fail">Không thể nhận thông tin cập nhật</string>
+    <string name="no_new_version">Không có phiên bản cập nhật</string>
+
+    <string name="add_to_download_list">Đã thêm vào danh sách tải xuống</string>
+    <string name="add_to_fav_list">Thêm</string>
+    <string name="del_from_fav_list">Đã xóa khỏi mục yêu thích</string>
+    <string name="Favourite">Yêu thích</string>
+    <string name="download">Tải về</string>
+    <string name="share">Chia sẻ</string>
+    <string name="label_my_download">Tải xuống của tôi</string>
+    <string name="label_all">Tất cả các</string>
+    <string name="label_del">Xóa bỏ</string>
+    <string name="label_edit">Chỉnh sửa</string>
+    <string name="label_downloading"> Đang tải xuống ...</string>
+    <string name="label_download_finish"> Tải về kết thúc</string>
+    <string name="label_download_fail"> Tải xuống thất bại</string>
+    <string name="third_login_fail">Đăng nhập Facebook thất bại</string>
+    <string name="login_out">Đăng xuất</string>
+    <string name="label_fav">Yêu thích</string>
+    <string name="close">Gần</string>
+    <string name="label_editing">Chỉnh sửa</string>
+    <string name="label_external_show">Quản lý tập tin</string>
+
+    <string name="error_google_play_miss">google play service missing</string>
+    <string name="error_google_play_update_requires">google play service update required</string>
+    <string name="error_google_play_dissabled">google play service disabled</string>
+    <string name="error_google_play_loadfail">google play service load failed</string>
+    <string name="admob_banner_ad_id">ca-app-pub-5440031222971276/3409535274</string>
+    <string name="admob_full_screen_ad_id"></string>
+    <string name="admob_app_id">ca-app-pub-5440031222971276~2862740362</string>
+
+
+</resources>

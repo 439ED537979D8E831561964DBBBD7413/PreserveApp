@@ -42,6 +42,7 @@ import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.utils.ImageTools2;
 import com.social.preserve.utils.ShareUtils;
+import com.social.preserve.utils.StringUtil;
 import com.social.preserve.utils.TalkingDataKeyEvent;
 import com.social.preserve.utils.TranslucentNavigationUtils;
 import com.tendcloud.tenddata.TCAgent;
@@ -93,6 +94,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
     private ProgressBar currentPbLoading;
     private ImageView currentIvCover;
     private PreserveVideo currentVideo;
+    private int currentUrlIndex;
     private int followStatus = 0;
     private int zanStatus = 0;
     private ImageView currentIvVideo;
@@ -377,7 +379,10 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             public void onClick(View v) {
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_SHORT_VIDEO);
                 Toast.makeText(App.getInstance(), getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
-                DownloadManager.getInstace().submitDownloadVideoTask(currentVideo.getVideoUrl(),System.currentTimeMillis()+".mp4",currentVideo.getCover(),true);
+                if(currentVideo.getVideoUrl()==null||currentVideo.getVideoUrl().size()<=0){
+                    return;
+                }
+                DownloadManager.getInstace().submitDownloadVideoTask(currentVideo.getId(),currentVideo.getVideoUrl().get(currentUrlIndex),System.currentTimeMillis()+".mp4",currentVideo.getCover(),true);
             }
         });
         mCurrentShareLayout.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +390,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             public void onClick(View view) {
 //                loading(getString(R.string.loading));
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_SHORT_VIDEO);
-                String url=currentVideo.getVideoUrl();
+                String url=(currentVideo.getVideoUrl()!=null&&currentVideo.getVideoUrl().size()>0)?currentVideo.getVideoUrl().get(0):"";
                 ShareUtils.shareFaceBook(VideoReviewActivity.this, "", "", url, new PlatformActionListener(){
 
                     @Override
@@ -431,6 +436,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
      * 播放视频
      */
     private void playVideo() {
+        currentUrlIndex=0;
         currentVideoView.setOnPlayListener(new ListIjkVideoView.OnPlayListener() {
             @Override
             public void onComplete() {
@@ -445,6 +451,18 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             @Override
             public void onError() {
                 currentPbLoading.setVisibility(View.GONE);
+                currentUrlIndex++;
+                if(currentVideo.getVideoUrl()!=null&&currentUrlIndex<currentVideo.getVideoUrl().size()){
+
+                    List<VideoModel> videoList = new ArrayList<>();
+                    String url=currentVideo.getVideoUrl().get(currentUrlIndex);
+                    Log.d(TAG, "onError: url "+url);
+                    videoList.add(new VideoModel(url,"",new StandardVideoController(VideoReviewActivity.this),true));
+                    currentVideoView.setVideos(videoList);
+                    currentVideoView.start();
+                }else{
+                    currentUrlIndex=0;
+                }
             }
 
             @Override
@@ -805,7 +823,7 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
 
             boolean isFav=false;
             for(int i=0;i< VideoManager.getInstace().getShortFavVideos().size();i++){
-                if(VideoManager.getInstace().getShortFavVideos().get(i).getId().equals(video.getId())){
+                if(video.getId().equals(VideoManager.getInstace().getShortFavVideos().get(i).getId())){
                     isFav=true;
                     break;
                 }
@@ -817,14 +835,15 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
                 holder.ivFoolow.setImageResource(R.mipmap.icon_unfav);
 
             }
-            holder.tvTags.setText(video.getLabel());
+            holder.tvTags.setText(StringUtil.convertToLabels(video.getLabel()));
             holder.tvContent.setText(video.getDescribed());
 
             holder.lockedStateLayout.setVisibility(View.GONE);
 //                holder.ivPlay.setVisibility(View.VISIBLE);
             holder.pbLoading.setVisibility(View.GONE);
             List<VideoModel> videoList = new ArrayList<>();
-            videoList.add(new VideoModel(video.getVideoUrl(),"",new StandardVideoController(VideoReviewActivity.this), false));
+            String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+            videoList.add(new VideoModel(url,"",new StandardVideoController(VideoReviewActivity.this), false));
             holder.videoView.setVideos(videoList);
             holder.videoView.setTag(holder.controller);
             holder.videoView.setPlayerConfig(holder.mPlayerConfig);

@@ -7,6 +7,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 
+import com.social.preserve.App;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.utils.Config;
 import com.social.preserve.utils.MD5;
@@ -23,6 +24,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.social.preserve.utils.Config.VIDEO_SUFFIX;
 
 /**
  * Created by pt198 on 28/09/2018.
@@ -52,6 +55,20 @@ public class DownloadManager {
         }
         mLoop=true;
         startLoop();
+        List<PreserveVideo> landVideos=VideoManager.getInstace().getLandVideos();
+        List<PreserveVideo> shortVideos=VideoManager.getInstace().getShortVideos();
+        for(PreserveVideo video:landVideos){
+            if(VideoManager.getInstace().isDownloadSucc(video.getId())){
+                DownloadTask task=new DownloadTask(video.getVideoUrl().get(0),video.getId(),"","","",false);
+                mDownloadFinishedTasks.put(video.getId(),task);
+            }
+        }
+        for(PreserveVideo video:shortVideos){
+            if(VideoManager.getInstace().isDownloadSucc(video.getId())){
+                DownloadTask task=new DownloadTask(video.getVideoUrl().get(0),video.getId(),"","","",true);
+                mDownloadFinishedTasks.put(video.getId(),task);
+            }
+        }
     }
     public void registerDownloadListener(OnDownloadListener listener){
         if(listener!=null){
@@ -64,8 +81,10 @@ public class DownloadManager {
             mListeners.remove(listener);
         }
     }
-    public void submitDownloadVideoTask(String filepath, String filaName, String coverPath, boolean isShortVideo){
-        DownloadTask task = new DownloadTask(filepath, MD5.GetMD5Code(filepath), filaName, "", coverPath,isShortVideo);
+    public void submitDownloadVideoTask(String videoId,String filepath, String filaName, String coverPath, boolean isShortVideo){
+
+
+        DownloadTask task = new DownloadTask(filepath, videoId, filaName, "", coverPath,isShortVideo);
         mWaitingTasks.put(task.getId(), task);
         mAllTasks.put(task.getId(), task);
         for(OnDownloadListener listener:mListeners){
@@ -73,6 +92,13 @@ public class DownloadManager {
                 listener.onStart(task.getId(),task.getFileName());
             }
         }
+        PreserveVideo video=new PreserveVideo();
+        video.setCover(task.getCoverPath());
+        List<String> urls=new ArrayList<>();
+        urls.add(Config.DOWNLOAD_STORAGE_DIR+task.getId()+VIDEO_SUFFIX);
+        video.setVideoUrl(urls);
+        video.setId(videoId);
+        VideoManager.getInstace().saveVideoInfoToDb(video,task.isShortVideo());
         synchronized (mTh) {
             mTh.notify();
         }
@@ -122,7 +148,7 @@ public class DownloadManager {
 
         RequestParams params = new RequestParams(task.getPath());
         params.setAutoRename(true);//断点下载
-        params.setSaveFilePath(Config.DOWNLOAD_STORAGE_DIR+task.getId());
+        params.setSaveFilePath(Config.DOWNLOAD_STORAGE_DIR+task.getId()+VIDEO_SUFFIX);
         x.http().get(params, new Callback.ProgressCallback<File>() {
 
             @Override
@@ -164,14 +190,11 @@ public class DownloadManager {
                         listener.onComplete(task.getId(),task.getPath(),task.getFileName());
                     }
                 }
+                VideoManager.getInstace().updateDownloadSuccToDb(task.getId());
                 synchronized (mTh){
                     mTh.notify();
                 }
-                PreserveVideo video=new PreserveVideo();
-                video.setCover(task.getCoverPath());
-                video.setVideoUrl(Config.DOWNLOAD_STORAGE_DIR+ MD5.GetMD5Code(task.getPath()));
-                video.setId(task.getPath());
-                VideoManager.getInstace().saveVideoInfoToDb(video,task.isShortVideo());
+
             }
 
             @Override
@@ -239,5 +262,17 @@ public class DownloadManager {
 
     public Map<String, DownloadTask> getDownloadingTasks() {
         return mDownloadingTasks;
+    }
+
+    public Map<String, DownloadTask> getmWaitingTasks() {
+        return mWaitingTasks;
+    }
+
+    public Map<String, DownloadTask> getDownloadFailTasks() {
+        return mDownloadFailTasks;
+    }
+
+    public Map<String, DownloadTask> getDownloadFinishedTasks() {
+        return mDownloadFinishedTasks;
     }
 }

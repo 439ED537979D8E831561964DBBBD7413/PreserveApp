@@ -34,7 +34,7 @@ import cn.sharesdk.framework.PlatformActionListener;
 
 public class VideoMoreOpeWindow {
 
-    public static void show(final Activity activity,final PreserveVideo video,View parent){
+    public static void show(final Activity activity,final PreserveVideo video,View parent,final int currentUrlIndex){
         final PopupWindow pop = new PopupWindow(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         View content = LayoutInflater.from(activity).inflate(R.layout.layout_more_ope, null);
         View addFav = content.findViewById(R.id.ll_add_fav);
@@ -72,7 +72,8 @@ public class VideoMoreOpeWindow {
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.DOWNLOAD_LAND_VIDEO);
                 pop.dismiss();
                 Toast.makeText(App.getInstance(), App.getInstance().getString(R.string.add_to_download_list), Toast.LENGTH_SHORT).show();
-                DownloadManager.getInstace().submitDownloadVideoTask(video.getVideoUrl(),System.currentTimeMillis()+".mp4",video.getCover(),false);
+                String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>currentUrlIndex)?video.getVideoUrl().get(currentUrlIndex):"";
+                DownloadManager.getInstace().submitDownloadVideoTask(video.getId(),url,System.currentTimeMillis()+".mp4",video.getCover(),false);
             }
         });
         share.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +81,7 @@ public class VideoMoreOpeWindow {
             public void onClick(View view) {
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
                 pop.dismiss();
-                String url=video.getVideoUrl();
+                String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
                 ShareUtils.shareFaceBook(activity, "", "", url, new PlatformActionListener(){
 
                     @Override

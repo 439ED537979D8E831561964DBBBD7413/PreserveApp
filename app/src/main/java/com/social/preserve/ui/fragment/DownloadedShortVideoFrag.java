@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.social.preserve.R;
+import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.ui.adapter.DownloadVideoAdapter;
@@ -105,8 +106,35 @@ public class DownloadedShortVideoFrag extends BaseFragment {
     public void onResume() {
         super.onResume();
         loadData();
+        DownloadManager.getInstace().registerDownloadListener(mDownloadListener);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        DownloadManager.getInstace().unregisterDownloadListener(mDownloadListener);
+    }
+    private DownloadManager.OnDownloadListener mDownloadListener =  new DownloadManager.OnDownloadListener() {
+        @Override
+        public void onStart(String taskId, String name) {
+
+        }
+
+        @Override
+        public void onComplete(String taskId, String path,String name) {
+            videoAdpater.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onFail(String taskId, String error,String name) {
+            videoAdpater.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onProgress(String taskId, int progress,String name) {
+            videoAdpater.notifyDataSetChanged();
+        }
+    } ;
     private void loadData(){
 //        for(int i=0;i<50;i++){
 //            PreserveVideo video=new PreserveVideo();

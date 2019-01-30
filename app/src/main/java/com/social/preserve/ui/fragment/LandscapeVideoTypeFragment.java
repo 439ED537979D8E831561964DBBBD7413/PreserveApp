@@ -210,61 +210,76 @@ public class LandscapeVideoTypeFragment extends BaseFragment {
                 }
             }
         });
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            int firstVisibleItem, lastVisibleItem, visibleCount;
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                switch (newState) {
-                    case SCROLL_STATE_IDLE: //滚动停止
-                        autoPlayVideo(recyclerView);
-                        break;
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                visibleCount = lastVisibleItem - firstVisibleItem;//记录可视区域item个数
-            }
-
-            private void autoPlayVideo(RecyclerView view) {
-                //循环遍历可视区域videoview,如果完全可见就开始播放
-                for (int i = 0; i < visibleCount; i++) {
-                    if (view == null || view.getChildAt(i) == null) continue;
-                    IjkVideoView ijkVideoView = view.getChildAt(i).findViewById(R.id.video_player);
-                    if (ijkVideoView != null) {
-                        Rect rect = new Rect();
-                        ijkVideoView.getLocalVisibleRect(rect);
-                        int videoHeight = ijkVideoView.getHeight();
-                        if (rect.top == 0 && rect.bottom == videoHeight) {
-                            ijkVideoView.start();
-                            return;
-                        }
-                    }
-                }
-            }
-        });
+//
+//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            int firstVisibleItem, lastVisibleItem, visibleCount;
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//
+//                switch (newState) {
+//                    case SCROLL_STATE_IDLE: //滚动停止
+//                        autoPlayVideo(recyclerView);
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+//                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+//                visibleCount = lastVisibleItem - firstVisibleItem;//记录可视区域item个数
+//            }
+//
+//            private void autoPlayVideo(RecyclerView view) {
+//                //循环遍历可视区域videoview,如果完全可见就开始播放
+//                for (int i = 0; i < visibleCount; i++) {
+//                    if (view == null || view.getChildAt(i) == null) continue;
+//                    IjkVideoView ijkVideoView = view.getChildAt(i).findViewById(R.id.video_player);
+//                    if (ijkVideoView != null) {
+//                        Rect rect = new Rect();
+//                        ijkVideoView.getLocalVisibleRect(rect);
+//                        int videoHeight = ijkVideoView.getHeight();
+//                        if (rect.top == 0 && rect.bottom == videoHeight) {
+//                            ijkVideoView.start();
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
 
     }
-
+    private boolean mPlaying=false;
     @Override
     public void onPause() {
         super.onPause();
-        VideoViewManager.instance().releaseVideoPlayer();
+        if(VideoViewManager.instance().getCurrentVideoPlayer()!=null){
+            mPlaying=VideoViewManager.instance().getCurrentVideoPlayer().isPlaying();
+        }
+        VideoViewManager.instance().pausePlayback();
     }
 
-//    @Override
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mPlaying) {
+            VideoViewManager.instance().resumePlayback();
+        }
+    }
+    //    @Override
 //    public void onBackPressed() {
 //        if (!VideoViewManager.instance().onBackPressed()){
 //            super.onBackPressed();
 //        }
 //    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

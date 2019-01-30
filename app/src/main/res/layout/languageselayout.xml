@@ -15,7 +15,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:text="Which language girls do you like most"
-        style="@style/black_15_sp"/>
+        style="@style/black_15_sp"
+        android:visibility="invisible"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/languagese_rv"
         android:layout_width="match_parent"

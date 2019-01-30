@@ -8,12 +8,13 @@
     <LinearLayout
         android:id="@+id/top_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dkplayer_controller_height"
+        android:layout_height="wrap_content"
         android:background="@drawable/dkplayer_shape_standard_controller_top_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/back"
@@ -39,7 +40,7 @@
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dkplayer_controller_text_size"
-            tools:text="这是一个标题" />
+            tools:text="" />
 
         <ImageView
             android:id="@+id/iv_battery"

@@ -58,8 +58,8 @@ public class DownloadVideoMoreOpeWindow {
         if(null==file || !file.exists()){
             return;
         }
-        Intent intent = new Intent("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.DEFAULT");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri uri;
         String authority = act.getPackageName() ;
@@ -70,7 +70,7 @@ public class DownloadVideoMoreOpeWindow {
         } else {
             uri = Uri.fromFile(file);
         }
-        intent.setDataAndType(uri, "*/*");
+        intent.setDataAndType(uri, "file/*");
 
         try {
             act.startActivity(intent);
@@ -80,7 +80,7 @@ public class DownloadVideoMoreOpeWindow {
     }
 
     public static void show(final Activity activity, View parent, final OnEditListener listener){
-        final PopupWindow pop = new PopupWindow(ScreenUtils.dip2px(activity,155), ScreenUtils.dip2px(activity,105));
+        final PopupWindow pop = new PopupWindow(ScreenUtils.dip2px(activity,155), ScreenUtils.dip2px(activity,60));
         View content = LayoutInflater.from(activity).inflate(R.layout.layout_down_video_more_ope, null);
         View edit = content.findViewById(R.id.ll_edit);
         View externalShow=content.findViewById(R.id.ll_external_show);

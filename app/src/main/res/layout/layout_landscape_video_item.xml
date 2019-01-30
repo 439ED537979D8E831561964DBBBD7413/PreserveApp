@@ -147,6 +147,8 @@
             android:text=""
             android:textSize="16sp"
             android:textColor="@color/text_color_333333"
+            android:singleLine="true"
+            android:ellipsize="end"
             />
             <ImageView
                 android:id="@+id/iv_more"
@@ -167,7 +169,7 @@
             android:layout_alignStart="@+id/tvTags"
             android:layout_below="@+id/ll_name"
             android:ellipsize="end"
-            android:lineSpacingExtra="1.5dp"
+            android:layout_marginRight="15dp"
             android:maxLines="2"
             android:textColor="@color/text_color_333333"
             android:textSize="15sp"
@@ -182,7 +184,7 @@
             android:layout_marginTop="5dp"
             android:layout_below="@+id/tvContent"
             tools:text=""
-            android:lines="1"
+            android:singleLine="true"
             android:ellipsize="end"
             android:paddingBottom="10dp"
             android:textSize="13sp"

@@ -37,7 +37,12 @@ public class VideoViewManager {
             mPlayer = null;
         }
     }
-
+    public void pausePlayback() {
+        if (mPlayer != null&&mPlayer.isPlaying()) mPlayer.pause();
+    }
+    public void resumePlayback() {
+        if (mPlayer != null) mPlayer.resume();
+    }
     public void stopPlayback() {
         if (mPlayer != null) mPlayer.stopPlayback();
     }

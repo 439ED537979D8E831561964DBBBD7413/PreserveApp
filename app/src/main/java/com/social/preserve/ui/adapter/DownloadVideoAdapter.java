@@ -15,10 +15,12 @@ import android.widget.TextView;
 import com.dueeeke.dkplayer.activity.extend.FullScreenActivity;
 import com.social.preserve.App;
 import com.social.preserve.R;
+import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.ui.activity.VideoReviewActivity;
 import com.social.preserve.utils.ImageTools2;
+import com.social.preserve.utils.MD5;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -145,6 +147,20 @@ public class DownloadVideoAdapter extends RecyclerView.Adapter<DownloadVideoAdap
         }else{
             holder.tvName.setText("");
         }
+//        String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+        if(DownloadManager.getInstace().getmWaitingTasks().containsKey(video.getId())){
+            holder.stateTv.setVisibility(View.VISIBLE);
+            holder.stateTv.setText(mContext.getString(R.string.download_waiting));
+        }else if(DownloadManager.getInstace().getDownloadingTasks().containsKey(video.getId())){
+            holder.stateTv.setVisibility(View.VISIBLE);
+            int progress=DownloadManager.getInstace().getDownloadingTasks().get(video.getId()).getProgress();
+            holder.stateTv.setText(mContext.getString(R.string.label_downloading)+progress+"%");
+        }else if(DownloadManager.getInstace().getDownloadFinishedTasks().containsKey(video.getId())){
+            holder.stateTv.setVisibility(View.GONE);
+        }else{
+            holder.stateTv.setVisibility(View.VISIBLE);
+            holder.stateTv.setText(mContext.getString(R.string.download_fail));
+        }
         boolean flag=mCheckFlag.get(position);
         if(isEdit){
             holder.selIv.setVisibility(View.VISIBLE);
@@ -213,6 +229,8 @@ public class DownloadVideoAdapter extends RecyclerView.Adapter<DownloadVideoAdap
         LinearLayout mLLNation;
         @BindView(R.id.iv_sel)
         ImageView selIv;
+        @BindView(R.id.tv_state)
+        TextView stateTv;
         public ViewHolder(View view){
             super(view);
             ButterKnife.bind(this,view);

@@ -306,6 +306,25 @@ public class IjkVideoView extends BaseIjkVideoView {
                 break;
         }
     }
+    public interface OnPlayListener{
+        void onComplete();
+        void onPrepared();
+        void onError();
+        void onInfo(int what, int extra);
+    }
+    private OnPlayListener mPlayListener;
+
+    public void setPlayListener(OnPlayListener playListener) {
+        this.mPlayListener = playListener;
+    }
+
+    @Override
+    public void onError() {
+        super.onError();
+        if(mPlayListener!=null){
+            mPlayListener.onError();
+        }
+    }
 
     @Override
     public void onVideoSizeChanged(int videoWidth, int videoHeight) {
