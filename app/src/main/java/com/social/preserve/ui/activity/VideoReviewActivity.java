@@ -40,6 +40,7 @@ import com.social.preserve.R;
 import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
+import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ImageTools2;
 import com.social.preserve.utils.ShareUtils;
 import com.social.preserve.utils.StringUtil;
@@ -390,8 +391,9 @@ public class VideoReviewActivity extends UnfitSysWindowBaseActivity {
             public void onClick(View view) {
 //                loading(getString(R.string.loading));
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_SHORT_VIDEO);
-                String url=(currentVideo.getVideoUrl()!=null&&currentVideo.getVideoUrl().size()>0)?currentVideo.getVideoUrl().get(0):"";
-                ShareUtils.shareFaceBook(VideoReviewActivity.this, "", "", url, new PlatformActionListener(){
+//                String url=(currentVideo.getVideoUrl()!=null&&currentVideo.getVideoUrl().size()>0)?currentVideo.getVideoUrl().get(0):"";
+                String shareUrl= Api.SHORTVIDEO_SHARE_URL+currentVideo.getId();
+                ShareUtils.shareFaceBook(VideoReviewActivity.this, "", "", shareUrl, new PlatformActionListener(){
 
                     @Override
                     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {

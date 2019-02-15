@@ -17,6 +17,7 @@ import com.social.preserve.download.DownloadManager;
 import com.social.preserve.download.VideoManager;
 import com.social.preserve.model.PreserveVideo;
 import com.social.preserve.ui.activity.VideoReviewActivity;
+import com.social.preserve.utils.Api;
 import com.social.preserve.utils.ScreenUtils;
 import com.social.preserve.utils.ShareUtils;
 import com.social.preserve.utils.TalkingDataKeyEvent;
@@ -81,8 +82,9 @@ public class VideoMoreOpeWindow {
             public void onClick(View view) {
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
                 pop.dismiss();
-                String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
-                ShareUtils.shareFaceBook(activity, "", "", url, new PlatformActionListener(){
+//                String url=(video.getVideoUrl()!=null&&video.getVideoUrl().size()>0)?video.getVideoUrl().get(0):"";
+                String shareUrl= Api.LANDVIDEO_SHARE_URL+video.getId();
+                ShareUtils.shareFaceBook(activity, "", "", shareUrl, new PlatformActionListener(){
 
                     @Override
                     public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {

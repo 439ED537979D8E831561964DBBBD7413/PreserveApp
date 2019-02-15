@@ -327,7 +327,8 @@ public class LandscapeVideoDetailActivity extends BaseActivity {
             case R.id.ll_share:
 //                loading(getString(R.string.loading));
                 TCAgent.onEvent(App.getInstance(), TalkingDataKeyEvent.SHARE_LAND_VIDEO);
-                String shareUrl=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(0):"";
+//                String shareUrl=(mVideo.getVideoUrl()!=null&&mVideo.getVideoUrl().size()>0)?mVideo.getVideoUrl().get(0):"";
+                String shareUrl=Api.LANDVIDEO_SHARE_URL+mVideo.getId();
                 ShareUtils.shareFaceBook(this, "", "", shareUrl, new PlatformActionListener() {
 
                     @Override
